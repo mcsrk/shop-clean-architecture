@@ -1,0 +1,10 @@
+.products {
+	width: 90%;
+	margin: 0 auto;
+}
+
+.products ul {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 1rem;
+}
