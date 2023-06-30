@@ -2,7 +2,11 @@ import axios, { AxiosInstance } from 'axios';
 
 import { IEcommerceAdapter } from './ecommerce.adapter.interface';
 
+// Config
 import { CONFIG } from '../config/config';
+
+// Custom Library
+import Logging from '../library/Logging';
 
 export class VtexAdapter implements IEcommerceAdapter {
 	private client: AxiosInstance;
@@ -21,11 +25,41 @@ export class VtexAdapter implements IEcommerceAdapter {
 
 	async searchProducts(searchterm: string = ''): Promise<any[]> {
 		try {
-			const response = await this.client.get(`/api/catalog_system/pub/products/search/${searchterm}`);
-			return response.data;
-		} catch (error) {
+			const allProducts: any[] = [];
+			let from = 0;
+			let to = 9;
+			let totalElements = 0;
+
+			do {
+				const response = await this.getPaginatedProducts(from, to, searchterm);
+				const products = response.data;
+				allProducts.push(...products);
+
+				const resourcesHeader = response.headers.resources;
+				const [range, total] = resourcesHeader.split('/');
+
+				totalElements = parseInt(total);
+				const [start, end] = range.split('-');
+
+				from = parseInt(start) + 10;
+				to = parseInt(end) + 10;
+				Logging.info(`[Vtex Adapter] Partial products: ${allProducts.length}`);
+			} while (from < totalElements);
+
+			Logging.info(`[Vtex Adapter] Total products retrieved: ${allProducts.length}`);
+			return allProducts;
+		} catch (error: any) {
 			console.error('Error getting products from VTEX:', error);
 			return [];
 		}
+	}
+	private async getPaginatedProducts(_from: number, _to: number, searchTerm: string): Promise<any> {
+		const response = await this.client.get(`/api/catalog_system/pub/products/search/${searchTerm}`, {
+			params: {
+				_from,
+				_to,
+			},
+		});
+		return response;
 	}
 }
