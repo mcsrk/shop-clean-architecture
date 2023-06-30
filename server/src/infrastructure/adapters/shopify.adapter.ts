@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import { IEcommerceAdapter } from './ecommerce.adapter';
+import { IEcommerceAdapter } from './ecommerce.adapter.interface';
 import { CONFIG } from '../config/config';
 
 export class ShopifyAdapter implements IEcommerceAdapter {
