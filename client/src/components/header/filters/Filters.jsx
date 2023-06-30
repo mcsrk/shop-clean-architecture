@@ -3,6 +3,9 @@ import { useId } from 'react';
 // Styles
 import './Filters.css';
 
+// Components
+import SearchBar from './SearchBar';
+
 // Hooks
 import { useFilters } from '../../../hooks/useFilters.js';
 
@@ -10,6 +13,7 @@ export function Filters() {
 	const { filters, setFilters } = useFilters();
 
 	/** useId Hook to generate an unique Id for input and label all over the App */
+
 	const minPriceFilterId = useId();
 	const categoryFilterId = useId();
 
@@ -32,8 +36,7 @@ export function Filters() {
 
 	return (
 		<section className="filters">
-			<h3>Busca lo que quieras y cámbialo fácilemente</h3>
-
+			<SearchBar />
 			<div>
 				<label htmlFor={categoryFilterId}>Categoría</label>
 				<select id={categoryFilterId} onChange={handleChangeCategory}>
