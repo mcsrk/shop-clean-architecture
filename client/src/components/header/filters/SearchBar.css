@@ -36,6 +36,9 @@
 	color: #222;
 	margin-right: 5px;
 }
+.input-wrapper input::placeholder {
+	color: #aaa;
+}
 
 .search-icon {
 	display: flex;
