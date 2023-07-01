@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import { AiOutlineShop } from 'react-icons/ai';
 
 // Styles
 import './Filters.css';
@@ -37,6 +38,13 @@ export function Filters() {
 	return (
 		<section className="filters">
 			<SearchBar />
+			<p className="extra-action">
+				¿Aún no te decides? <span>BÚSCALO EN LA TIENDA AQUÍ</span>
+				{' >'}
+				<button className="shop-button">
+					<AiOutlineShop className="icon" />
+				</button>
+			</p>
 			<div>
 				<label htmlFor={categoryFilterId}>Categoría</label>
 				<select id={categoryFilterId} onChange={handleChangeCategory}>
@@ -58,10 +66,6 @@ export function Filters() {
 				/>
 				<span>${filters.minPrice}</span>
 			</div>
-
-			<h4>
-				¿Aún no te decides? <span>BÚSCALO EN LA TIENDA AQUÍ {'>'}</span>
-			</h4>
 		</section>
 	);
 }

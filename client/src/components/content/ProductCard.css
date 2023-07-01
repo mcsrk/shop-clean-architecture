@@ -67,7 +67,3 @@
 	display: flex;
 	gap: 4px;
 }
-.actions button {
-	border-radius: 50px;
-	border-color: #646cff;
-}
