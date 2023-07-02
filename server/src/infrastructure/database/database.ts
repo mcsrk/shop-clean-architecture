@@ -6,6 +6,8 @@ export const sequelize = new Sequelize(
 	CONFIG.POSTGRESSQL.USER,
 	CONFIG.POSTGRESSQL.PASSWORD,
 	{
+		logging: false,
+
 		dialect: 'postgres',
 		host: CONFIG.POSTGRESSQL.HOST,
 		port: CONFIG.POSTGRESSQL.PORT,
