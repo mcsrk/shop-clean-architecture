@@ -36,38 +36,42 @@ export class VtexAdapter implements IEcommerceAdapter {
 		});
 	}
 
-	async searchProducts(searchterm: string = ''): Promise<any[]> {
+	async searchProducts(searchTerm: string = ''): Promise<any[]> {
 		try {
+			/** VTEX Api behavior is odd if search term is less than 3 chars long  */
+			const MAX_PRODUCTS = CONFIG.VTEX.MAX_PRODUCTS_PER_PAGE;
+			const fixedSearchTerm = searchTerm && searchTerm.length >= 3 ? searchTerm : '';
+
 			const allProducts: any[] = [];
 			let from = 0;
 			let to = 9;
-			// FIXME:Commented GET ALL PAGES. convert
-			// let totalElements = 0;
-			let totalElements = 10;
+			let totalElements = 0;
 
 			do {
-				const response = await this.getPaginatedProducts(from, to, searchterm);
+				const response = await this.getPaginatedProducts(from, to, fixedSearchTerm);
 				const products = response.data;
 				allProducts.push(...products);
 
 				const resourcesHeader = response.headers.resources;
 				const [range, total] = resourcesHeader.split('/');
-				// FIXME:Commented GET ALL PAGES. convert totalElemtns = 0
-				// totalElements = parseInt(total);
-				const [start, end] = range.split('-');
 
+				totalElements = fixedSearchTerm ? parseInt(total) : MAX_PRODUCTS;
+
+				const [start, end] = range.split('-');
 				from = parseInt(start) + 10;
 				to = parseInt(end) + 10;
+
 				Logging.info(`[Vtex Adapter] Partial products: ${allProducts.length}`);
 			} while (from < totalElements);
 
-			Logging.info(`[Vtex Adapter] Total products retrieved: ${allProducts.length}`);
+			Logging.info(`[Vtex Adapter] Total products retrieved: ${allProducts.length} from ${totalElements} allowed`);
 			return allProducts;
 		} catch (error: any) {
 			console.error('Error getting products from VTEX:', error);
 			return [];
 		}
 	}
+
 	private async getPaginatedProducts(_from: number, _to: number, searchTerm: string): Promise<any> {
 		const response = await this.client.get(`/api/catalog_system/pub/products/search/${searchTerm}`, {
 			params: {

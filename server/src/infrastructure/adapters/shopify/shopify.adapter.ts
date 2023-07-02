@@ -36,45 +36,9 @@ export class ShopifyAdapter implements IEcommerceAdapter {
 			...this.authConfig,
 		});
 	}
-	private async requestShopifyAPI(url: string, params: object): Promise<any> {
+	private async requestShopifyAPI(url: string, params: object = {}): Promise<any> {
 		const response = await this.client.get(url, { params });
 		return response;
-	}
-
-	async searchProducts(searchTerm: string): Promise<any[]> {
-		try {
-			/** Retrieve initial page of products */
-
-			let allProducts: any[] = [];
-			const route = '/products.json';
-			const response = await this.requestShopifyAPI(route, { title: searchTerm });
-
-			const linkHeader = response.headers.link;
-			const products = response.data.products;
-
-			allProducts.push(...products);
-
-			let nextPageUrl = this.getNextPageUrlFromLinkHeader(linkHeader);
-
-			/** Retrieve rest of the product's as long as there is a next page link */
-			// FIXME: commented GET ALL PAGES
-			// while (nextPageUrl) {
-			// 	Logging.info(`[Shopify Adapter] Partial products: ${allProducts.length}`);
-
-			// 	const currentPageResponse = await this.requestShopifyNextPage(nextPageUrl);
-			// 	const currentPageProducts = currentPageResponse.data.products;
-			// 	const nextPageLinkHeader = currentPageResponse.headers.link;
-
-			// 	allProducts.push(...currentPageProducts);
-
-			// 	nextPageUrl = this.getNextPageUrlFromLinkHeader(nextPageLinkHeader);
-			// }
-			Logging.info(`[Shopify Adapter] Total products retrieved: ${allProducts.length}`);
-			return allProducts;
-		} catch (error: any) {
-			console.error('Error searching products in Shopify:', error);
-			return [];
-		}
 	}
 
 	private async requestShopifyNextPage(nextPageUrl: string): Promise<any> {
@@ -93,6 +57,94 @@ export class ShopifyAdapter implements IEcommerceAdapter {
 		const match = linkRegex.exec(linkHeader);
 		return match ? match[1] : null;
 	}
+
+	private async getProductById(productId: number): Promise<any> {
+		try {
+			const url = `/products/${productId}.json`;
+			const response = await this.requestShopifyAPI(url);
+			const product = response.data.product;
+
+			return product;
+		} catch (error: any) {
+			Logging.error(`Error getting product with ID ${productId} from Shopify: ${error}`);
+			throw error;
+		}
+	}
+
+	private async getProductIdsBySearchTerm(searchTerm: string): Promise<any[]> {
+		try {
+			/** Retrieve initial page of products . Only requests id and title fields*/
+
+			let allProducts: any[] = [];
+			const route = '/products.json';
+			const response = await this.requestShopifyAPI(route, { fields: 'id,title,tags,body_html' });
+
+			const linkHeader = response.headers.link;
+			const products = response.data.products;
+
+			allProducts.push(...products);
+
+			/** Get the next page results Link if exists */
+			let nextPageUrl = this.getNextPageUrlFromLinkHeader(linkHeader);
+
+			/** Retrieve rest of the product's as long as there is a next page results link */
+
+			while (nextPageUrl) {
+				Logging.info(`[Shopify Adapter] Partial ID & TITLE products: ${allProducts.length}`);
+
+				const currentPageResponse = await this.requestShopifyNextPage(nextPageUrl);
+				const currentPageProducts = currentPageResponse.data.products;
+				const nextPageLinkHeader = currentPageResponse.headers.link;
+
+				allProducts.push(...currentPageProducts);
+
+				nextPageUrl = this.getNextPageUrlFromLinkHeader(nextPageLinkHeader);
+			}
+			Logging.info(`[Shopify Adapter] Total ID & TITLE products retrieved: ${allProducts.length}`);
+
+			/** Search for coincidences in title, tags and body_html */
+			const matchingProducts = allProducts.filter((product: any) => {
+				const { title, tags, body_html } = product;
+				const lowercaseSearchTerm = searchTerm.toLowerCase();
+
+				return (
+					title.toLowerCase().includes(lowercaseSearchTerm) ||
+					(tags && tags.toLowerCase().includes(lowercaseSearchTerm)) ||
+					(body_html && body_html.toLowerCase().includes(lowercaseSearchTerm))
+				);
+			});
+
+			Logging.info(`[Shopify Adapter] Filtered ID & TITLE products by search term: ${matchingProducts.length}`);
+			const matchingids = matchingProducts.map((product: any) => product.id);
+
+			return matchingids;
+		} catch (error: any) {
+			console.error('Error searching products in Shopify:', error);
+			return [];
+		}
+	}
+
+	async searchProducts(searchTerm: string): Promise<any[]> {
+		try {
+			/** Get ids of products which title, tag or html_body matches the search term */
+			const matchingIds = await this.getProductIdsBySearchTerm(searchTerm);
+
+			/** Get details only for the first 9 products*/
+			const MAX_PRODUCTS = CONFIG.SHOPIFY.MAX_PRODUCTS_PER_PAGE - 1;
+
+			const firstN = matchingIds.slice(0, MAX_PRODUCTS);
+			const allProductsDetailsPromises = firstN.map((id: number) => this.getProductById(id)) ?? [];
+			const allProductsDetails = await Promise.all(allProductsDetailsPromises);
+
+			Logging.info(`[Shopify Adapter] Total products by id retrieved: ${allProductsDetails.length}`);
+
+			return allProductsDetails;
+		} catch (error: any) {
+			console.error('Error searching products in Shopify:', error);
+			return [];
+		}
+	}
+
 	// adapts raw product data to server response product format
 	adaptProduct(shopifyProduct: any): EcommerceProduct {
 		const { id, variants, options } = shopifyProduct;
