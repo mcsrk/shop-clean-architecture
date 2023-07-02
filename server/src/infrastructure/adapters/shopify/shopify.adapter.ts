@@ -6,12 +6,16 @@ import { CONFIG } from '../../config/config';
 
 // Custom library
 import Logging from '../../library/Logging';
+
 import { EcommerceProduct } from '../ecommerce.product.interface';
+import { IProduct, IProductInput } from '../../../entities/product.interface';
+import { Product } from '../../../entities/product.entity';
 
 export class ShopifyAdapter implements IEcommerceAdapter {
 	private client: AxiosInstance;
 	private authConfig: AxiosRequestConfig;
 	private readonly defaultValues: EcommerceProduct;
+	private readonly defaultValuesDb: IProductInput;
 
 	constructor() {
 		this.defaultValues = {
@@ -24,6 +28,18 @@ export class ShopifyAdapter implements IEcommerceAdapter {
 			long_description: 'no val at shopify adapter',
 			price: '1',
 			variants: [],
+		};
+		this.defaultValuesDb = {
+			parent_id: null,
+			init: true,
+			external_id: 'no val at shopify adapter',
+			search_text: 'no val at shopify adapter',
+			name: 'no val at shopify adapter',
+			price: 0,
+			image: 'no image',
+			json_product: {},
+			sku: 'no val at shopify adapter',
+			store_product_id: 'no val at shopify adapter',
 		};
 		this.authConfig = {
 			auth: {
@@ -135,10 +151,13 @@ export class ShopifyAdapter implements IEcommerceAdapter {
 			const firstN = matchingIds.slice(0, MAX_PRODUCTS);
 			const allProductsDetailsPromises = firstN.map((id: number) => this.getProductById(id)) ?? [];
 			const allProductsDetails = await Promise.all(allProductsDetailsPromises);
+			const productsFormatedToDb = this.adaptProductToDB(allProductsDetails[0]);
 
-			Logging.info(`[Shopify Adapter] Total products by id retrieved: ${allProductsDetails.length}`);
+			Logging.info(
+				`[Shopify Adapter] Total products by id retrieved: ${allProductsDetails.length}, after formatted to db : ${productsFormatedToDb?.length}`,
+			);
 
-			return allProductsDetails;
+			return productsFormatedToDb;
 		} catch (error: any) {
 			console.error('Error searching products in Shopify:', error);
 			return [];
@@ -191,5 +210,60 @@ export class ShopifyAdapter implements IEcommerceAdapter {
 		});
 
 		return ecommerceProductFormatted;
+	}
+
+	adaptProductToDB(shopifyProduct: any): IProduct[] {
+		let responseFormattedProducts: IProduct[] = [];
+
+		const { id, variants, options } = shopifyProduct;
+
+		if (variants.length === 0) {
+			Logging.warning(`[EcommerceProduct] db adapt shopifyProduct Id: ${id} no tiene variants`);
+		}
+
+		if (options.length === 0) {
+			Logging.warning(`[EcommerceProduct] db adapt shopifyProduct Id: ${id} no tiene options`);
+		}
+
+		const parentProductData: IProductInput = {
+			parent_id: this.defaultValuesDb.parent_id,
+			init: false,
+			external_id: id ?? this.defaultValuesDb.external_id,
+			search_text: shopifyProduct.title ?? this.defaultValuesDb.search_text,
+			name: shopifyProduct.title ?? this.defaultValuesDb.name,
+			price: Number(variants[0].price) ?? this.defaultValuesDb.price,
+			image: shopifyProduct?.image?.src ?? shopifyProduct?.images[0]?.src ?? this.defaultValuesDb.image,
+			json_product: shopifyProduct ?? this.defaultValuesDb.json_product,
+			sku: id ?? this.defaultValuesDb.sku,
+			store_product_id: id ?? this.defaultValuesDb.store_product_id,
+		};
+
+		const parentProduct = new Product(parentProductData);
+		responseFormattedProducts.push(parentProduct);
+
+		const parsedVariants: IProduct[] = variants?.map((variant: any) => {
+			if (!variant.title) {
+				Logging.warning(
+					`[EcommerceProduct] shopifyProduct db adapt Id: ${id} - variant: ${variant.id} no tiene titulo: ${variant.title}. `,
+				);
+			}
+
+			const variantData: IProductInput = {
+				parent_id: parentProduct.product_id,
+				init: this.defaultValuesDb.init,
+				external_id: variant.id ?? this.defaultValuesDb.external_id,
+				search_text: variant.title ?? this.defaultValuesDb.search_text,
+				name: variant.title ?? this.defaultValuesDb.name,
+				price: Number(variant.price) ?? this.defaultValuesDb.price,
+				image: '' ?? this.defaultValuesDb.image,
+				json_product: variant ?? this.defaultValuesDb.json_product,
+				sku: variant.id ?? this.defaultValuesDb.sku,
+				store_product_id: variant.product_id ?? this.defaultValuesDb.store_product_id,
+			};
+
+			return new Product(variantData);
+		});
+
+		return responseFormattedProducts.concat(parsedVariants);
 	}
 }
