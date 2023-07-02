@@ -8,10 +8,13 @@ import { CONFIG } from '../../config/config';
 // Custom Library
 import Logging from '../../library/Logging';
 import { EcommerceProduct } from '../ecommerce.product.interface';
+import { IProductInput, IProduct } from '../../../entities/product.interface';
+import { Product } from '../../../entities/product.entity';
 
 export class VtexAdapter implements IEcommerceAdapter {
 	private client: AxiosInstance;
 	private readonly defaultValues: EcommerceProduct;
+	private readonly defaultValuesDb: IProductInput;
 
 	constructor() {
 		this.defaultValues = {
@@ -25,6 +28,18 @@ export class VtexAdapter implements IEcommerceAdapter {
 			price: '2',
 			variants: [],
 		};
+		this.defaultValuesDb = {
+			parent_id: '',
+			init: true,
+			external_id: '',
+			search_text: '',
+			name: '',
+			price: 0,
+			image: '',
+			json_product: {},
+			sku: '',
+			store_product_id: 'VTEX - MagicStore',
+		};
 		this.client = axios.create({
 			baseURL: `https://${CONFIG.VTEX.ACCOUNT_NAME}.${CONFIG.VTEX.ENVIROMENT}.com.br`,
 			headers: {
@@ -36,7 +51,7 @@ export class VtexAdapter implements IEcommerceAdapter {
 		});
 	}
 
-	async searchProducts(searchTerm: string = ''): Promise<any[]> {
+	async searchProducts(searchTerm: string = ''): Promise<IProduct[][]> {
 		try {
 			/** VTEX Api behavior is odd if search term is less than 3 chars long  */
 			const MAX_PRODUCTS = CONFIG.VTEX.MAX_PRODUCTS_PER_PAGE;
@@ -64,8 +79,12 @@ export class VtexAdapter implements IEcommerceAdapter {
 				Logging.info(`[Vtex Adapter] Partial products: ${allProducts.length}`);
 			} while (from < totalElements);
 
-			Logging.info(`[Vtex Adapter] Total products retrieved: ${allProducts.length} from ${totalElements} allowed`);
-			return allProducts;
+			const productsFormatedToDb = allProducts.map((product) => this.adaptProductToDB(product));
+
+			Logging.info(
+				`[Vtex Adapter] Total products retrieved: ${allProducts.length} from ${totalElements} allowed. After formatted to db : ${productsFormatedToDb?.length}`,
+			);
+			return productsFormatedToDb;
 		} catch (error: any) {
 			console.error('Error getting products from VTEX:', error);
 			return [];
@@ -134,5 +153,70 @@ export class VtexAdapter implements IEcommerceAdapter {
 		});
 
 		return ecommerceProductFormatted;
+	}
+	adaptProductToDB(vtexProduct: any): IProduct[] {
+		let responseFormattedProducts: IProduct[] = [];
+
+		const { productId: id, items } = vtexProduct;
+
+		if (items.length === 0) {
+			Logging.warning(`[EcommerceProduct] vtexProduct Id: ${id} no tiene items`);
+		}
+
+		const firstVariantPrice = items[0].sellers[0].commertialOffer.Price;
+		const firstVariantImage = items[0].images[0].imageUrl;
+
+		const parentProductData: IProductInput = {
+			parent_id: this.defaultValuesDb.parent_id,
+			init: false,
+			external_id: id ?? this.defaultValuesDb.external_id,
+			search_text: vtexProduct.productName ?? this.defaultValuesDb.search_text,
+			name: vtexProduct.productName ?? this.defaultValuesDb.name,
+			price: Number(firstVariantPrice) ?? this.defaultValuesDb.price,
+			image: firstVariantImage ?? this.defaultValuesDb.image,
+			json_product: vtexProduct ?? this.defaultValuesDb.json_product,
+			sku: id ?? this.defaultValuesDb.sku,
+			store_product_id: /* id ?? */ this.defaultValuesDb.store_product_id,
+		};
+
+		const parentProduct = new Product(parentProductData);
+		responseFormattedProducts.push(parentProduct);
+
+		const parsedVariants: IProduct[] = items?.map((item: any) => {
+			const { itemId: variantId, sellers, referenceId, nameComplete, name, images } = item;
+
+			if (sellers.length === 0) {
+				Logging.warning(
+					`[EcommerceProduct] vtexProduct Id: ${id} - item: ${variantId} no tiene sellers: ${sellers}. La variante ${variantId} no tendra precio ni cantidad`,
+				);
+			}
+			if (referenceId.length === 0) {
+				Logging.warning(
+					`[EcommerceProduct] vtexProduct Id: ${id} - item: ${variantId} no tiene referenceId: ${referenceId}. La variante ${variantId} no tendra selected options `,
+				);
+			}
+
+			// se usa el  seller 0 para definir el precio y cantidad (un poco arbitrario)
+			const rootSeller = sellers[0];
+			const variantPrice = rootSeller?.commertialOffer?.Price ?? -1;
+			const variantImage = images[0].imageUrl;
+
+			const variantData: IProductInput = {
+				parent_id: parentProduct.product_id,
+				init: this.defaultValuesDb.init,
+				external_id: variantId ?? this.defaultValuesDb.external_id,
+				search_text: nameComplete ?? this.defaultValuesDb.search_text,
+				name: name ?? this.defaultValuesDb.name,
+				price: Number(variantPrice) ?? this.defaultValuesDb.price,
+				image: variantImage ?? this.defaultValuesDb.image,
+				json_product: item ?? this.defaultValuesDb.json_product,
+				sku: variantId ?? this.defaultValuesDb.sku,
+				store_product_id: /* variantId ?? */ this.defaultValuesDb.store_product_id,
+			};
+
+			return new Product(variantData);
+		});
+
+		return responseFormattedProducts.concat(parsedVariants);
 	}
 }

@@ -32,14 +32,14 @@ export class ShopifyAdapter implements IEcommerceAdapter {
 		this.defaultValuesDb = {
 			parent_id: null,
 			init: true,
-			external_id: 'no val at shopify adapter',
-			search_text: 'no val at shopify adapter',
-			name: 'no val at shopify adapter',
+			external_id: '',
+			search_text: '',
+			name: '',
 			price: 0,
-			image: 'no image',
+			image: '',
 			json_product: {},
-			sku: 'no val at shopify adapter',
-			store_product_id: 'no val at shopify adapter',
+			sku: '',
+			store_product_id: 'Shopify - HeavenStore',
 		};
 		this.authConfig = {
 			auth: {
@@ -140,7 +140,7 @@ export class ShopifyAdapter implements IEcommerceAdapter {
 		}
 	}
 
-	async searchProducts(searchTerm: string): Promise<any[]> {
+	async searchProducts(searchTerm: string): Promise<IProduct[][]> {
 		try {
 			/** Get ids of products which title, tag or html_body matches the search term */
 			const matchingIds = await this.getProductIdsBySearchTerm(searchTerm);
@@ -151,7 +151,7 @@ export class ShopifyAdapter implements IEcommerceAdapter {
 			const firstN = matchingIds.slice(0, MAX_PRODUCTS);
 			const allProductsDetailsPromises = firstN.map((id: number) => this.getProductById(id)) ?? [];
 			const allProductsDetails = await Promise.all(allProductsDetailsPromises);
-			const productsFormatedToDb = this.adaptProductToDB(allProductsDetails[0]);
+			const productsFormatedToDb = allProductsDetails.map((product) => this.adaptProductToDB(product));
 
 			Logging.info(
 				`[Shopify Adapter] Total products by id retrieved: ${allProductsDetails.length}, after formatted to db : ${productsFormatedToDb?.length}`,
@@ -235,7 +235,7 @@ export class ShopifyAdapter implements IEcommerceAdapter {
 			image: shopifyProduct?.image?.src ?? shopifyProduct?.images[0]?.src ?? this.defaultValuesDb.image,
 			json_product: shopifyProduct ?? this.defaultValuesDb.json_product,
 			sku: id ?? this.defaultValuesDb.sku,
-			store_product_id: id ?? this.defaultValuesDb.store_product_id,
+			store_product_id: /*id ??*/ this.defaultValuesDb.store_product_id,
 		};
 
 		const parentProduct = new Product(parentProductData);
@@ -258,7 +258,7 @@ export class ShopifyAdapter implements IEcommerceAdapter {
 				image: '' ?? this.defaultValuesDb.image,
 				json_product: variant ?? this.defaultValuesDb.json_product,
 				sku: variant.id ?? this.defaultValuesDb.sku,
-				store_product_id: variant.product_id ?? this.defaultValuesDb.store_product_id,
+				store_product_id: /* variant.product_id ?? */ this.defaultValuesDb.store_product_id,
 			};
 
 			return new Product(variantData);
