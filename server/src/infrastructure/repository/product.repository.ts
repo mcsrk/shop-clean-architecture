@@ -12,10 +12,13 @@ export class ProductRepository implements IProductRepository {
 		const { search_text, price, price_operator } = searchParams;
 
 		const where: any = {};
-
+		/** Only SELECT main products, and include variants as a left join new field */
+		where.parent_id = {
+			[Op.eq]: null,
+		};
+		/** iLike is case insesintive */
 		if (search_text) {
-			where.name = {
-				/** iLike is case insesintive */
+			where.search_text = {
 				[Op.iLike]: `%${search_text}%`,
 			};
 		}
@@ -26,9 +29,15 @@ export class ProductRepository implements IProductRepository {
 			};
 		}
 
+		/** Get the main products and includes its variants (db associations)  */
+
 		try {
 			const products = await ProductModel.findAll({
 				where,
+				include: {
+					model: ProductModel,
+					as: 'variants',
+				},
 			});
 			return products;
 		} catch (error: any) {
