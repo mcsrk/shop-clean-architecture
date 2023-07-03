@@ -1,26 +1,33 @@
 import express from 'express';
 import http from 'http';
 
+// Custom modules
+import Logging from './infrastructure/library/Logging';
+
 // Config
 import { CONFIG } from './infrastructure/config/config';
 
 // Infrastructure
 import { makeDatabase } from './infrastructure/database/database';
-
-// Custom modules
-import Logging from './infrastructure/library/Logging';
+import { syncModels } from './infrastructure/models/models';
 
 // Routes
 import productRoutes from './routes/product.routes';
+import customRoute from './routes/product.route';
+import externalProductRoute from './routes/ecommerce.route';
 
 const router = express();
 makeDatabase()
 	.then(() => {
-		Logging.info('PostgresSQL connected successfully.');
+		Logging.setup('PostgresSQL connected successfully.');
 		/** If PostgresSQl is connected, the server will be up and running */
 		StartServer();
 	})
-	.catch((error) => Logging.error(error));
+	.catch((error: any) => Logging.error(error));
+
+syncModels()
+	.then(() => Logging.setup('Models have been synchronized'))
+	.catch((error: any) => Logging.error(error));
 
 /** Only Start Server if Database is connected */
 const StartServer = () => {
@@ -59,6 +66,8 @@ const StartServer = () => {
 
 	/** Routes */
 	router.use('/search', productRoutes);
+	router.use('/ecommerce', externalProductRoute);
+	router.use('/changeThisRoute', customRoute);
 
 	/** Healthcheck endpoint */
 	router.get('/ping', (req, res, next) => res.status(200).json({ hello: 'world' }));
