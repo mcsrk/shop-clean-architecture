@@ -25,7 +25,7 @@ export class Product implements IProduct {
 		this.product_id = uuidv4();
 		this.parent_id = product.parent_id ?? product.parent_id ?? null;
 		this.init = product.init ?? true;
-		this.external_id = product.external_id ?? externalId?.toString() ?? '';
+		this.external_id = product.external_id.toString() ?? '';
 		this.search_text = product.search_text ?? name;
 		this.name = product.name ?? name;
 		this.price = product.price ?? Number(product?.items?.sellers?.commertialOffer?.Price ?? product.price ?? 0.0);
