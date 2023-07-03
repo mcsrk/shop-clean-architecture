@@ -29,7 +29,7 @@ export class VtexAdapter implements IEcommerceAdapter {
 			variants: [],
 		};
 		this.defaultValuesDb = {
-			parent_id: '',
+			parent_id: null,
 			init: true,
 			external_id: '',
 			search_text: '',
