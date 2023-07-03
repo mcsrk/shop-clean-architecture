@@ -21,6 +21,11 @@ class ProductModel extends Model<IProduct, ProductPostCreationAttributes> implem
 	public readonly createdAt!: Date;
 	public readonly updatedAt!: Date;
 	public readonly deletedAt!: Date;
+	// Definición de las asociaciones del modelo
+	static associate() {
+		ProductModel.hasMany(ProductModel, { foreignKey: 'parent_id', as: 'variants' });
+		ProductModel.belongsTo(ProductModel, { foreignKey: 'parent_id', as: 'main_product' });
+	}
 }
 
 ProductModel.init(
