@@ -43,15 +43,20 @@ export class ProductController {
 			const insertEcommerceDbFormattedPromises =
 				allMainProductsAndVariants?.map((product: any) => this.productUseCase.insertDbFormattedProduct(product)) ?? [];
 
-			Logging.info(`[product.controller] Insert promises : ${insertEcommerceDbFormattedPromises.length}`);
+			Logging.info(`[product.controller] Inserting promises: ${insertEcommerceDbFormattedPromises.length}`);
 			const insertedProducts = await Promise.all(insertEcommerceDbFormattedPromises);
 
 			Logging.info(`[product.controller] Inserted ${insertedProducts.length} products into own database`);
+
 			// TODO: 5 Dispara la busqueda en db propia y trae los productos formateados como respuesta
-			Logging.info(`[product.controller] Looking for products saved in own database based on params...`);
-			Logging.info(`[product.controller] Returning n prodcuts from own database`);
-			// const products = await this.productUseCase.listProducts(filterParams);
-			res.send({ insertedProducts });
+			Logging.info(`[product.controller] Looking for products saved in own database based on query params...`);
+			Logging.info(`[product.controller] Query params:`);
+			Logging.warning(filterParams);
+
+			const productsByFilters = await this.productUseCase.selectProductsByFilters(filterParams);
+
+			Logging.info(`[product.controller] Returning ${productsByFilters?.length} prodcuts from own database`);
+			res.send({ products: productsByFilters });
 		} catch (err) {
 			res.status(500).json({
 				success: false,

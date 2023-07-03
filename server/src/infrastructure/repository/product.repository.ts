@@ -8,17 +8,19 @@ import Logging from '../library/Logging';
 import ProductModel from '../models/product.model';
 
 export class ProductRepository implements IProductRepository {
-	async getProducts(searchParams: ISearchParams): Promise<IProduct[] | null> {
+	async selectProductsByFilters(searchParams: ISearchParams): Promise<IProduct[] | null> {
 		const { search_text, price, price_operator } = searchParams;
+
 		const where: any = {};
 
 		if (search_text) {
 			where.name = {
-				[Op.like]: `%${search_text}%`,
+				/** iLike is case insesintive */
+				[Op.iLike]: `%${search_text}%`,
 			};
 		}
 
-		if (price && price_operator) {
+		if (price_operator && price) {
 			where.price = {
 				[Op[price_operator]]: price,
 			};
@@ -38,15 +40,19 @@ export class ProductRepository implements IProductRepository {
 
 	async insertProduct(product: Product): Promise<IProduct | null> {
 		try {
-			const exists = await ProductModel.findOne({ where: { external_id: product.external_id } });
-			if (exists) {
-				return exists;
+			const existingProduct = await ProductModel.findOne({ where: { external_id: product.external_id } });
+
+			if (existingProduct) {
+				return existingProduct;
 			}
-			const newProduct = await ProductModel.create(product);
-			return newProduct;
+
+			const insertedProduct = await ProductModel.create(product);
+			return insertedProduct;
 		} catch (error: any) {
 			const message = error.message;
+
 			Logging.error(`[Product Repository] Error inserting product: ${message}`);
+
 			throw new Error(`Error inserting product: ${message}`);
 		}
 	}
