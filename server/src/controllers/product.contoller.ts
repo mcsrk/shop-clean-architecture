@@ -3,6 +3,7 @@ import { ProductService } from '../use-cases/products/index';
 import Logging from '../infrastructure/library/Logging';
 import EcommerceService from '../use-cases/ecommerce';
 import { IProduct } from '../entities/product.interface';
+import { FilterParams } from '../entities/filter-params.entity';
 
 export class ProductController {
 	// externalProductUseCase -> Step 1 (search ecommerce products by string)
@@ -13,8 +14,9 @@ export class ProductController {
 
 	public async searchProductsUsingParams(req: Request, res: Response) {
 		try {
-			const filterParams = req.query;
-			const searchTerm = filterParams.search_text as string;
+			const filterParamsEntity = new FilterParams(req.query);
+
+			const searchTerm = filterParamsEntity.search_text as string;
 
 			const companyPrefix = req.params.companyPrefix as string;
 			if (!companyPrefix) {
@@ -51,9 +53,9 @@ export class ProductController {
 			// TODO: 5 Dispara la busqueda en db propia y trae los productos formateados como respuesta
 			Logging.info(`[product.controller] Looking for products saved in own database based on query params...`);
 			Logging.info(`[product.controller] Query params:`);
-			Logging.warning(filterParams);
+			Logging.warning(filterParamsEntity);
 
-			const productsByFilters = await this.productUseCase.selectProductsByFilters(filterParams);
+			const productsByFilters = await this.productUseCase.selectProductsByFilters(filterParamsEntity);
 
 			Logging.info(`[product.controller] Returning ${productsByFilters?.length} prodcuts from own database`);
 			res.send({ products: productsByFilters });
