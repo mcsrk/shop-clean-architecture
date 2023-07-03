@@ -55,10 +55,10 @@ export class ProductController {
 			Logging.info(`[product.controller] Query params:`);
 			Logging.warning(filterParamsEntity);
 
-			const productsByFilters = await this.productUseCase.selectProductsByFilters(filterParamsEntity);
+			const filterdProductsWithVariants = await this.productUseCase.selectProductsByFilters(filterParamsEntity);
 
-			Logging.info(`[product.controller] Returning ${productsByFilters?.length} prodcuts from own database`);
-			res.send({ products: productsByFilters });
+			Logging.info(`[product.controller] Returning ${filterdProductsWithVariants?.length} prodcuts from own database`);
+			res.send({ products: filterdProductsWithVariants });
 		} catch (err) {
 			res.status(500).json({
 				success: false,
