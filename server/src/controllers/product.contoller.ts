@@ -42,7 +42,7 @@ export class ProductController {
 				(await this.externalProductUseCase.searchProducts(companyPrefix, searchTerm || '')) ?? [];
 
 			Logging.info(
-				`[product.controller] Retrieved ${dbFormattedEcommerceProductsMatrix.length} prodcuts from ${companyPrefix} Ecommerce`,
+				`[product.controller] Retrieved ${dbFormattedEcommerceProductsMatrix.length} products from ${companyPrefix} Ecommerce`,
 			);
 
 			/** 4. Insert products and variants obtained from the ecommerce query */
@@ -62,26 +62,24 @@ export class ProductController {
 
 			const insertEcommerceDbFormattedPromises =
 				allMainProductsAndVariants?.map((product: any) => this.productUseCase.insertDbFormattedProduct(product)) ?? [];
+			Logging.info(`[product.controller] Insert Promises: ${insertEcommerceDbFormattedPromises.length}`);
 
-			Logging.info(`[product.controller] Inserting promises: ${insertEcommerceDbFormattedPromises.length}`);
 			const insertedProducts = await Promise.all(insertEcommerceDbFormattedPromises);
-
 			Logging.info(`[product.controller] Inserted ${insertedProducts.length} products into own database`);
 
 			/** 5. Trigger a search in own database */
 
-			Logging.info(`[product.controller] Looking for products saved in own database based on query params...`);
-			Logging.info(`[product.controller] Query params:`);
+			Logging.info(`[product.controller] Searching for products stored in own database based on query parameters:`);
 			Logging.warning(filterParamsEntity);
 
 			const filterdProductsWithVariants = await this.productUseCase.selectProductsByFilters(filterParamsEntity);
 
-			/** Format products with its variants to server response format */
+			/** Applying server-response format to products with their variants */
 
 			const responseProducts = filterdProductsWithVariants?.map(
 				(productWithVariants) => new ProductResponseEntity(productWithVariants),
 			);
-			Logging.info(`[product.controller] Returning ${filterdProductsWithVariants?.length} prodcuts from own database`);
+			Logging.info(`[product.controller] Retrieved ${filterdProductsWithVariants?.length} products from own database`);
 
 			return res.status(200).json({
 				success: true,
