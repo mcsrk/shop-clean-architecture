@@ -14,9 +14,7 @@ export class EcommerceService {
 	}
 
 	searchProducts = (companyPrefix: string, searchTerm: string) => {
-		Logging.info(
-			`[use-cases/ecommerce/index.ts] Search products from ${companyPrefix} using the search term :${searchTerm}`,
-		);
+		Logging.info(`[use-cases/ecommerce/] Search products from ${companyPrefix} using the search term :${searchTerm}`);
 
 		return this._searchEcommerceProducts.searchEcommerceProducts(companyPrefix, searchTerm);
 	};

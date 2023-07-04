@@ -71,9 +71,7 @@ export class VtexAdapter implements IEcommerceAdapter {
 
 			const productsFormatedToDb = allProducts.map((product) => this.adaptProductToDB(product));
 
-			Logging.info(
-				`[Vtex Adapter] Total products retrieved: ${allProducts.length} from ${totalElements} allowed. After formatted to db : ${productsFormatedToDb?.length}`,
-			);
+			Logging.info(`[Vtex Adapter] Total products retrieved: ${allProducts.length} from ${totalElements} allowed.`);
 			return productsFormatedToDb;
 		} catch (error: any) {
 			console.error('Error getting products from VTEX:', error);

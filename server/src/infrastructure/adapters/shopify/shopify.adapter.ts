@@ -143,9 +143,7 @@ export class ShopifyAdapter implements IEcommerceAdapter {
 			const allProductsDetails = await Promise.all(allProductsDetailsPromises);
 			const productsFormatedToDb = allProductsDetails.map((product) => this.adaptProductToDB(product));
 
-			Logging.info(
-				`[Shopify Adapter] Total products by id retrieved: ${allProductsDetails.length}, after formatted to db : ${productsFormatedToDb?.length}`,
-			);
+			Logging.info(`[Shopify Adapter] Total products by id retrieved: ${allProductsDetails.length}`);
 
 			return productsFormatedToDb;
 		} catch (error: any) {
