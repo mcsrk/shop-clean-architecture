@@ -1,8 +1,8 @@
 // Types
 import { Request, Response } from 'express';
-import { IProduct } from '../entities/product.interface';
 
 // Entities
+import { Product } from '../entities/product/product.entity';
 import { FilterParams } from '../entities/filter-params/filter-params.entity';
 import { ProductResponseEntity } from '../entities/response-product/product.response.entity';
 
@@ -54,7 +54,7 @@ export class ProductController {
 			/** Simplify the matrix to an array of type:
 			 * [mainProduct1, ...variants1, ..., mainProduct-n, ...variants-n]*/
 
-			const allMainProductsAndVariants: IProduct[] = dbFormattedEcommerceProductsMatrix.flatMap(
+			const allMainProductsAndVariants: Product[] = dbFormattedEcommerceProductsMatrix.flatMap(
 				(productAndVariants) => productAndVariants,
 			);
 

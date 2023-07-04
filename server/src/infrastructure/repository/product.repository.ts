@@ -4,18 +4,17 @@ import { Op } from 'sequelize';
 import ProductModel from '../models/product.model';
 
 // Interfaces
-import { IProduct } from '../../entities/product.interface';
 import { IProductRepository } from '../../entities/product.repository.interface';
 
 // Entities
 import { FilterParams } from '../../entities/filter-params/filter-params.entity';
-import { Product } from '../../entities/product.entity';
+import { Product } from '../../entities/product/product.entity';
 
 // Custom library
 import Logging from '../library/Logging';
 
 export class ProductRepository implements IProductRepository {
-	async selectProductsByFilters(searchParams: FilterParams): Promise<IProduct[] | null> {
+	async selectProductsByFilters(searchParams: FilterParams): Promise<Product[] | null> {
 		const { search_text, price, price_operator } = searchParams;
 
 		const where: any = {};
@@ -54,7 +53,7 @@ export class ProductRepository implements IProductRepository {
 		}
 	}
 
-	async insertProduct(product: Product): Promise<IProduct | null> {
+	async insertProduct(product: Product): Promise<Product | null> {
 		try {
 			const existingProduct = await ProductModel.findOne({ where: { external_id: product.external_id } });
 

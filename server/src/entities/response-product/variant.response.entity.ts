@@ -1,6 +1,11 @@
+// Custom Library
 import Logging from '../../infrastructure/library/Logging';
-import { IProduct } from '../product.interface';
+
+// Interfaces
 import { IVariantResponse } from './variant.response.interface';
+
+// Entities
+import { Product } from '../product/product.entity';
 
 /** Implemented logic to do certaing format depending of variantdb source */
 export class VariantResponseEntity implements IVariantResponse {
@@ -10,7 +15,7 @@ export class VariantResponseEntity implements IVariantResponse {
 	displayName?: string;
 	price?: string;
 
-	constructor(mainProduct: IProduct, variant: IProduct) {
+	constructor(mainProduct: Product, variant: Product) {
 		const variantDefaultvalues = {
 			legacyResourceId: '',
 			inventoryQuantity: 0,

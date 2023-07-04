@@ -3,7 +3,9 @@ import Logging from '../library/Logging';
 
 // Interfaces
 import { IExternalProductRepository } from '../../entities/ecommerce/ecommerce.repository.interface';
-import { IProduct } from '../../entities/product.interface';
+
+// Entities
+import { Product } from '../../entities/product/product.entity';
 
 // Ecommerce adapters
 import { ShopifyAdapter } from '../adapters/shopify/shopify.adapter';
@@ -19,7 +21,7 @@ const ecommerceAdapters: ApiClients = {
 };
 
 export class ExternalProductRepository implements IExternalProductRepository {
-	async searchProducts(companyPrefix: string, searchTerm: string): Promise<IProduct[][]> {
+	async searchProducts(companyPrefix: string, searchTerm: string): Promise<Product[][]> {
 		Logging.info(`[1 Ecommerce Repository] Search products from ${companyPrefix} using search term ${searchTerm}`);
 
 		const ecommerceAdapter = ecommerceAdapters[companyPrefix];

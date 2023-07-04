@@ -1,5 +1,5 @@
-import { IProduct } from '../product.interface';
+import { Product } from '../product/product.entity';
 
 export interface IExternalProductRepository {
-	searchProducts(companyPrefix: string, searchTerm: string): Promise<IProduct[][]>;
+	searchProducts(companyPrefix: string, searchTerm: string): Promise<Product[][]>;
 }

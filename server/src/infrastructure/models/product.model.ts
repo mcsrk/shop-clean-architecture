@@ -1,6 +1,10 @@
 import { DataTypes, Model, Optional } from 'sequelize';
+
+// Database instance
 import { sequelize } from '../database/database';
-import { IProduct } from '../../entities/product.interface';
+
+// Interfaces
+import { IProduct } from '../../entities/product/product.interface';
 
 type ProductPostCreationAttributes = Optional<IProduct, 'product_id'>;
 

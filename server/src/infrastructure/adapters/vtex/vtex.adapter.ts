@@ -8,10 +8,10 @@ import Logging from '../../library/Logging';
 
 // Interfaces
 import { IEcommerceAdapter } from '../ecommerce.adapter.interface';
-import { IProductInput, IProduct } from '../../../entities/product.interface';
+import { IProductInput } from '../../../entities/product/product.interface';
 
 // Entities
-import { Product } from '../../../entities/product.entity';
+import { Product } from '../../../entities/product/product.entity';
 
 export class VtexAdapter implements IEcommerceAdapter {
 	private client: AxiosInstance;
@@ -41,7 +41,7 @@ export class VtexAdapter implements IEcommerceAdapter {
 		});
 	}
 
-	async searchProducts(searchTerm: string = ''): Promise<IProduct[][]> {
+	async searchProducts(searchTerm: string = ''): Promise<Product[][]> {
 		try {
 			/** VTEX Api behavior is odd if search term is less than 3 chars long  */
 			const MAX_PRODUCTS = CONFIG.VTEX.MAX_PRODUCTS_PER_PAGE;
@@ -91,8 +91,8 @@ export class VtexAdapter implements IEcommerceAdapter {
 		return response;
 	}
 
-	adaptProductToDB(vtexProduct: any): IProduct[] {
-		let responseFormattedProducts: IProduct[] = [];
+	adaptProductToDB(vtexProduct: any): Product[] {
+		let responseFormattedProducts: Product[] = [];
 
 		const { productId: id, items } = vtexProduct;
 
@@ -119,7 +119,7 @@ export class VtexAdapter implements IEcommerceAdapter {
 		const parentProduct = new Product(parentProductData);
 		responseFormattedProducts.push(parentProduct);
 
-		const parsedVariants: IProduct[] = items?.map((item: any) => {
+		const parsedVariants: Product[] = items?.map((item: any) => {
 			const { itemId: variantId, sellers, referenceId, nameComplete, name, images } = item;
 
 			if (sellers.length === 0) {

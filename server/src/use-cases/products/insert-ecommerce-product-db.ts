@@ -1,5 +1,8 @@
+// Interfaces
 import { IProductRepository } from '../../entities/product.repository.interface';
-import { Product } from '../../entities/product.entity';
+
+// Entities
+import { Product } from '../../entities/product/product.entity';
 
 export class InsertDBFormattedProduct {
 	/** Shorthand property initialization  */

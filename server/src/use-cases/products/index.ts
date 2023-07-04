@@ -2,7 +2,7 @@
 import { IProductRepository } from '../../entities/product.repository.interface';
 
 // Entities
-import { Product } from '../../entities/product.entity';
+import { Product } from '../../entities/product/product.entity';
 import { FilterParams } from '../../entities/filter-params/filter-params.entity';
 
 // Use cases

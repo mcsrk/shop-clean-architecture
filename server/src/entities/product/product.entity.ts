@@ -18,6 +18,9 @@ export class Product implements IProduct {
 	sku: string;
 	store_product_id: string;
 
+	/** Fileds retrived from database  */
+	variants?: any[];
+
 	constructor(product: any) {
 		const externalId = product.productId ?? product.id ?? product.external_id;
 		const name = product.productName ?? product.title ?? product.name;

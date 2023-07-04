@@ -8,10 +8,10 @@ import Logging from '../../library/Logging';
 
 // Interfaces
 import { IEcommerceAdapter } from '../ecommerce.adapter.interface';
-import { IProduct, IProductInput } from '../../../entities/product.interface';
+import { IProductInput } from '../../../entities/product/product.interface';
 
 // Entities
-import { Product } from '../../../entities/product.entity';
+import { Product } from '../../../entities/product/product.entity';
 
 export class ShopifyAdapter implements IEcommerceAdapter {
 	private client: AxiosInstance;
@@ -130,7 +130,7 @@ export class ShopifyAdapter implements IEcommerceAdapter {
 		}
 	}
 
-	async searchProducts(searchTerm: string): Promise<IProduct[][]> {
+	async searchProducts(searchTerm: string): Promise<Product[][]> {
 		try {
 			/** Get ids of products which title, tag or html_body matches the search term */
 			const matchingIds = await this.getProductIdsBySearchTerm(searchTerm);
@@ -154,8 +154,8 @@ export class ShopifyAdapter implements IEcommerceAdapter {
 		}
 	}
 
-	adaptProductToDB(shopifyProduct: any): IProduct[] {
-		let responseFormattedProducts: IProduct[] = [];
+	adaptProductToDB(shopifyProduct: any): Product[] {
+		let responseFormattedProducts: Product[] = [];
 
 		const { id, variants, options } = shopifyProduct;
 
@@ -183,7 +183,7 @@ export class ShopifyAdapter implements IEcommerceAdapter {
 		const parentProduct = new Product(parentProductData);
 		responseFormattedProducts.push(parentProduct);
 
-		const parsedVariants: IProduct[] = variants?.map((variant: any) => {
+		const parsedVariants: Product[] = variants?.map((variant: any) => {
 			if (!variant.title) {
 				Logging.warning(
 					`[EcommerceProduct] shopifyProduct db adapt Id: ${id} - variant: ${variant.id} no tiene titulo: ${variant.title}. `,

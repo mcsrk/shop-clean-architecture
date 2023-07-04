@@ -1,8 +1,10 @@
-import { IProduct } from '../product.interface';
+// Interfaces
 import { IProductResponse } from './product.response.interface';
 import { IVariantResponse } from './variant.response.interface';
 
+// Entities
 import { VariantResponseEntity } from './variant.response.entity';
+import { Product } from '../product/product.entity';
 
 export class ProductResponseEntity implements IProductResponse {
 	/** external_id and sku are the same */
@@ -16,7 +18,7 @@ export class ProductResponseEntity implements IProductResponse {
 	price: string;
 	variants?: IVariantResponse[] | undefined;
 
-	constructor(mainProduct: IProduct) {
+	constructor(mainProduct: Product) {
 		const { variants: productVariants } = mainProduct;
 
 		this.external_id = mainProduct.external_id;
