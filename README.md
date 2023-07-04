@@ -28,8 +28,8 @@ TBD
 ## Screenshots
 
 ### Server Docs
-![Diagrama de base de datos ](server/docs/Diagrama%20de%20secuencia%20-%20Search.png)
-![Diagrama de casos de uso ](server/docs/Diagrama%20de%20casos%20de%20uso.png)
+![Diagrama de base de datos](server/docs/Diagrama%20ER%20de%20base%20de%20datos.png)
+![Diagrama de casos de uso](server/docs/Diagrama%20de%20casos%20de%20uso.png)
 ![Diagrama de secuencia /search](server/docs/Diagrama%20de%20secuencia%20-%20Search.png)
 ![Diagrama de secuencia /products](server/docs/Diagrama%20de%20secuencia%20-%20Products.png)
  
