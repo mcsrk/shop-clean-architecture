@@ -6,6 +6,7 @@ export const FiltersContext = createContext();
 // Este es el que nos provee de acceso al contexto
 export function FiltersProvider({ children }) {
 	const [filters, setFilters] = useState({
+		searchTerm: '',
 		category: 'all',
 		minPrice: 250,
 	});

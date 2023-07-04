@@ -1,7 +1,11 @@
 import { useId } from 'react';
+import { AiOutlineShop } from 'react-icons/ai';
 
 // Styles
 import './Filters.css';
+
+// Components
+import SearchBar from './SearchBar';
 
 // Hooks
 import { useFilters } from '../../../hooks/useFilters.js';
@@ -10,6 +14,7 @@ export function Filters() {
 	const { filters, setFilters } = useFilters();
 
 	/** useId Hook to generate an unique Id for input and label all over the App */
+
 	const minPriceFilterId = useId();
 	const categoryFilterId = useId();
 
@@ -32,8 +37,14 @@ export function Filters() {
 
 	return (
 		<section className="filters">
-			<h3>Busca lo que quieras y cámbialo fácilemente</h3>
-
+			<SearchBar />
+			<p className="extra-action">
+				¿Aún no te decides? <span>BÚSCALO EN LA TIENDA AQUÍ</span>
+				{' >'}
+				<button className="shop-button">
+					<AiOutlineShop className="icon" />
+				</button>
+			</p>
 			<div>
 				<label htmlFor={categoryFilterId}>Categoría</label>
 				<select id={categoryFilterId} onChange={handleChangeCategory}>
@@ -55,10 +66,6 @@ export function Filters() {
 				/>
 				<span>${filters.minPrice}</span>
 			</div>
-
-			<h4>
-				¿Aún no te decides? <span>BÚSCALO EN LA TIENDA AQUÍ {'>'}</span>
-			</h4>
 		</section>
 	);
 }

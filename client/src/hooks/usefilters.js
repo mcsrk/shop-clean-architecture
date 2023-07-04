@@ -6,7 +6,11 @@ export function useFilters() {
 
 	const filterProducts = (products) => {
 		return products.filter((product) => {
-			return product.price >= filters.minPrice && (filters.category === 'all' || product.category === filters.category);
+			return (
+				product.price >= filters.minPrice &&
+				(filters.category === 'all' || product.category === filters.category) &&
+				product.description.toLowerCase().includes(filters.searchTerm.toLowerCase())
+			);
 		});
 	};
 

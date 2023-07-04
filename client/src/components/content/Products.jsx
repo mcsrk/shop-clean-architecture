@@ -7,7 +7,7 @@ export function Products({ products }) {
 	return (
 		<section className="products">
 			<ul>
-				{products.slice(0, 10).map((product) => {
+				{products.slice(0, 24).map((product) => {
 					// const isProductInCart = checkProductInCart(product);
 					return <ProductCard key={`product-card-${product.product_id}`} product={product} />;
 				})}
