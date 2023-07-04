@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
 // Repositories
-import { ECommerceRepository } from '../infrastructure/repository/ecommerce.repository';
-import { ProductRepository } from '../infrastructure/repository/product.repository';
+import { ECommerceRepository } from '../infrastructure/repository/ecommerce/ecommerce.repository';
+import { ProductRepository } from '../infrastructure/repository/product/product.repository';
 
 // Use cases
 import ProductService from '../use-cases/products';

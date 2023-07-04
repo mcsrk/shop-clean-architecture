@@ -1,4 +1,4 @@
-import { IProductRepository } from '../../entities/product.repository.interface';
+import { IProductRepository } from '../../infrastructure/repository/product/product.repository.interface';
 
 // Entities
 import { FilterParams } from '../../entities/filter-params/filter-params.entity';

@@ -1,5 +1,5 @@
 // Interfaces
-import { IProductRepository } from '../../entities/product.repository.interface';
+import { IProductRepository } from '../../infrastructure/repository/product/product.repository.interface';
 
 // Entities
 import { Product } from '../../entities/product/product.entity';

@@ -1,15 +1,15 @@
 // Custom Library
-import Logging from '../library/Logging';
+import Logging from '../../library/Logging';
 
 // Interfaces
-import { IECommerceRepository } from '../../entities/ecommerce/ecommerce.repository.interface';
+import { IECommerceRepository } from './ecommerce.repository.interface';
 
 // Entities
-import { Product } from '../../entities/product/product.entity';
+import { Product } from '../../../entities/product/product.entity';
 
 // Ecommerce adapters
-import { ShopifyAdapter } from '../adapters/shopify/shopify.adapter';
-import { VtexAdapter } from '../adapters/vtex/vtex.adapter';
+import { ShopifyAdapter } from '../../adapters/shopify/shopify.adapter';
+import { VtexAdapter } from '../../adapters/vtex/vtex.adapter';
 
 type ApiClients = {
 	[storeName: string]: ShopifyAdapter | VtexAdapter;

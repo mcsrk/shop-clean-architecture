@@ -1,4 +1,4 @@
-import { IECommerceRepository } from '../../entities/ecommerce/ecommerce.repository.interface';
+import { IECommerceRepository } from '../../infrastructure/repository/ecommerce/ecommerce.repository.interface';
 import Logging from '../../infrastructure/library/Logging';
 
 export class SearchEcommerceProducts {

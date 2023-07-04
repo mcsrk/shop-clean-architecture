@@ -1,6 +1,6 @@
 // Entities
-import { Product } from './product/product.entity';
-import { FilterParams } from './filter-params/filter-params.entity';
+import { Product } from '../../../entities/product/product.entity';
+import { FilterParams } from '../../../entities/filter-params/filter-params.entity';
 
 /** Repository to modify the products */
 export interface IProductRepository {

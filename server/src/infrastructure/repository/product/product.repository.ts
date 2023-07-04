@@ -1,17 +1,17 @@
 import { Op } from 'sequelize';
 
 // Models
-import ProductModel from '../models/product.model';
+import ProductModel from '../../models/product.model';
 
 // Interfaces
-import { IProductRepository } from '../../entities/product.repository.interface';
+import { IProductRepository } from './product.repository.interface';
 
 // Entities
-import { FilterParams } from '../../entities/filter-params/filter-params.entity';
-import { Product } from '../../entities/product/product.entity';
+import { FilterParams } from '../../../entities/filter-params/filter-params.entity';
+import { Product } from '../../../entities/product/product.entity';
 
 // Custom library
-import Logging from '../library/Logging';
+import Logging from '../../library/Logging';
 
 export class ProductRepository implements IProductRepository {
 	async selectProductsByFilters(searchParams: FilterParams): Promise<Product[] | null> {
