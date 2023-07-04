@@ -1,10 +1,13 @@
+// Custom Library
 import Logging from '../library/Logging';
 
-// Ecommerce adapter
-import { ShopifyAdapter } from '../adapters/shopify/shopify.adapter';
-import { VtexAdapter } from '../adapters/vtex/vtex.adapter';
+// Interfaces
 import { IExternalProductRepository } from '../../entities/ecommerce/ecommerce.repository.interface';
 import { IProduct } from '../../entities/product.interface';
+
+// Ecommerce adapters
+import { ShopifyAdapter } from '../adapters/shopify/shopify.adapter';
+import { VtexAdapter } from '../adapters/vtex/vtex.adapter';
 
 type ApiClients = {
 	[storeName: string]: ShopifyAdapter | VtexAdapter;

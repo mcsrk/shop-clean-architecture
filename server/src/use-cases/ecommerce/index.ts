@@ -1,14 +1,22 @@
 import { IExternalProductRepository } from '../../entities/ecommerce/ecommerce.repository.interface';
-import Logging from '../../infrastructure/library/Logging';
+
+// Ecommerce use cases
 import { SearchEcommerceProducts } from './search-ecommerce-products';
+
+// Custom library
+import Logging from '../../infrastructure/library/Logging';
 
 export class EcommerceService {
 	private _searchEcommerceProducts: SearchEcommerceProducts;
+
 	constructor(productRepository: IExternalProductRepository) {
 		this._searchEcommerceProducts = new SearchEcommerceProducts(productRepository);
 	}
+
 	searchProducts = (companyPrefix: string, searchTerm: string) => {
-		Logging.info(`[Ecommerce Service Index.ts] Search products from ${companyPrefix} using search term :${searchTerm}`);
+		Logging.info(
+			`[use-cases/ecommerce/index.ts] Search products from ${companyPrefix} using the search term :${searchTerm}`,
+		);
 
 		return this._searchEcommerceProducts.searchEcommerceProducts(companyPrefix, searchTerm);
 	};
