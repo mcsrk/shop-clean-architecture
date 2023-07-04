@@ -1,13 +1,21 @@
+// Types
 import { Request, Response } from 'express';
-import { ProductService } from '../use-cases/products/index';
-import Logging from '../infrastructure/library/Logging';
-import EcommerceService from '../use-cases/ecommerce';
 import { IProduct } from '../entities/product.interface';
+
+// Entities
 import { FilterParams } from '../entities/filter-params.entity';
+import { ProductResponseEntity } from '../entities/response-product/product.response.entity';
+
+// Use cases
+import ProductService from '../use-cases/products';
+import EcommerceService from '../use-cases/ecommerce';
+
+// Custom library
+import Logging from '../infrastructure/library/Logging';
 
 export class ProductController {
-	// externalProductUseCase -> Step 1 (search ecommerce products by string)
-	// productUseCase -> Step 4 & 5 (insert ecommerce products & query own products)
+	// externalProductUseCase -> Step 1 (Triggers the product query in the requested ecommerce)
+	// productUseCase -> Step 4 & 5 (Insert products and variants  & Trigger a search in own database)
 	constructor(private externalProductUseCase: EcommerceService, private productUseCase: ProductService) {
 		this.searchProductsUsingParams = this.searchProductsUsingParams.bind(this);
 	}
@@ -25,23 +33,33 @@ export class ProductController {
 
 			Logging.info(`[product.controller] Getting products from ${companyPrefix} Ecommerce...`);
 
-			// TODO: 1 Dispara la consulta de productos en el ecommerce solicitado
+			/** 1. Triggers the product query in the requested ecommerce
+			 * Gets an array of type: [[mainProduct, ...variants],...,[mainProduct, ...variants]]
+			 * format useful for traceability of the request
+			 */
+
 			const dbFormattedEcommerceProductsMatrix =
 				(await this.externalProductUseCase.searchProducts(companyPrefix, searchTerm || '')) ?? [];
 
 			Logging.info(
 				`[product.controller] Retrieved ${dbFormattedEcommerceProductsMatrix.length} prodcuts from ${companyPrefix} Ecommerce`,
 			);
-			// TODO: 4 Inserta los productos y sus variantes obtenidos de la consulta de los ecommerce
+
+			/** 4. Insert products and variants obtained from the ecommerce query */
+
 			Logging.info(
 				`[product.controller] Inserting ${dbFormattedEcommerceProductsMatrix.length} products with variants into own database...`,
 			);
-			// Add products to the database AND get main products created, not variants. porque los main tienen el nombre que coincide con el search term
+
+			/** Simplify the matrix to an array of type:
+			 * [mainProduct1, ...variants1, ..., mainProduct-n, ...variants-n]*/
 
 			const allMainProductsAndVariants: IProduct[] = dbFormattedEcommerceProductsMatrix.flatMap(
 				(productAndVariants) => productAndVariants,
 			);
-			// TODO: convert product: any to product: Product. and all the way back to EcommerceAdapters
+
+			/** Add products and variants to the database */
+
 			const insertEcommerceDbFormattedPromises =
 				allMainProductsAndVariants?.map((product: any) => this.productUseCase.insertDbFormattedProduct(product)) ?? [];
 
@@ -50,15 +68,29 @@ export class ProductController {
 
 			Logging.info(`[product.controller] Inserted ${insertedProducts.length} products into own database`);
 
-			// TODO: 5 Dispara la busqueda en db propia y trae los productos formateados como respuesta
+			/** 5. Trigger a search in own database */
+
 			Logging.info(`[product.controller] Looking for products saved in own database based on query params...`);
 			Logging.info(`[product.controller] Query params:`);
 			Logging.warning(filterParamsEntity);
 
 			const filterdProductsWithVariants = await this.productUseCase.selectProductsByFilters(filterParamsEntity);
 
+			/** Format products with its variants to server response format */
+
+			const responseProducts = filterdProductsWithVariants?.map(
+				(productWithVariants) => new ProductResponseEntity(productWithVariants),
+			);
 			Logging.info(`[product.controller] Returning ${filterdProductsWithVariants?.length} prodcuts from own database`);
-			res.send({ products: filterdProductsWithVariants });
+
+			return res.status(200).json({
+				success: true,
+				message: 'OK',
+				result: {
+					count: responseProducts?.length,
+					items: responseProducts,
+				},
+			});
 		} catch (err) {
 			res.status(500).json({
 				success: false,

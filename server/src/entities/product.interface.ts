@@ -8,9 +8,16 @@ export interface IProduct {
 	name: string;
 	price: number;
 	image: string;
-	json_product: object;
+	json_product: any;
 	sku: string;
 	store_product_id: string;
+
+	/** Fileds retrived from database  */
+	variants?: any[];
+
+	createdAt?: Date;
+	updatedAt?: Date;
+	deletedAt?: Date;
 }
 
 /** Product to create in own database */
