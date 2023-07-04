@@ -13,17 +13,17 @@ const route = Router();
 /**
  * Initialize repository
  */
-const productRepo = new ProductRepository();
+const productRepository = new ProductRepository();
 
 /**
  * Initialize use cases
  */
-const productUseCase = new ProductService(productRepo);
+const productUseCases = new ProductService(productRepository);
 
 /**
  * Initialize product controller
  */
-const productController = new ProductController(productUseCase);
+const productController = new ProductController(productUseCases);
 
 /**
  * Create routes

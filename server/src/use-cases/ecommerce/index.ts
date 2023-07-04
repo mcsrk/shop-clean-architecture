@@ -1,4 +1,4 @@
-import { IExternalProductRepository } from '../../entities/ecommerce/ecommerce.repository.interface';
+import { IECommerceRepository } from '../../entities/ecommerce/ecommerce.repository.interface';
 
 // Ecommerce use cases
 import { SearchEcommerceProducts } from './search-ecommerce-products';
@@ -9,7 +9,7 @@ import Logging from '../../infrastructure/library/Logging';
 export class EcommerceService {
 	private _searchEcommerceProducts: SearchEcommerceProducts;
 
-	constructor(productRepository: IExternalProductRepository) {
+	constructor(productRepository: IECommerceRepository) {
 		this._searchEcommerceProducts = new SearchEcommerceProducts(productRepository);
 	}
 

@@ -2,7 +2,7 @@
 import Logging from '../library/Logging';
 
 // Interfaces
-import { IExternalProductRepository } from '../../entities/ecommerce/ecommerce.repository.interface';
+import { IECommerceRepository } from '../../entities/ecommerce/ecommerce.repository.interface';
 
 // Entities
 import { Product } from '../../entities/product/product.entity';
@@ -20,7 +20,7 @@ const ecommerceAdapters: ApiClients = {
 	HeavenStore: new ShopifyAdapter(),
 };
 
-export class ExternalProductRepository implements IExternalProductRepository {
+export class ECommerceRepository implements IECommerceRepository {
 	async searchProducts(companyPrefix: string, searchTerm: string): Promise<Product[][]> {
 		Logging.info(`[1 Ecommerce Repository] Search products from ${companyPrefix} using search term ${searchTerm}`);
 
@@ -40,7 +40,7 @@ export class ExternalProductRepository implements IExternalProductRepository {
 			return ecommerceProductsFormattedToDB;
 		} catch (err: any) {
 			const message = err.message;
-			Logging.error(`[ExternalProductRepo] Error getting products from ${companyPrefix} ecommerce: ${message}`);
+			Logging.error(`[ECommerceRepo] Error getting products from ${companyPrefix} ecommerce: ${message}`);
 			throw new Error(`Error getting products from ${companyPrefix} ecommerce: ${message}`);
 		}
 	}

@@ -13,9 +13,9 @@ import EcommerceService from '../use-cases/ecommerce';
 import Logging from '../infrastructure/library/Logging';
 
 export class SearchController {
-	// externalProductUseCase -> Triggers the product query in the requested ecommerce
+	// ecommerceUseCase -> Triggers the product query in the requested ecommerce
 	// productUseCase ->  Insert products and variants
-	constructor(private externalProductUseCase: EcommerceService, private productUseCase: ProductService) {
+	constructor(private ecommerceUseCase: EcommerceService, private productUseCase: ProductService) {
 		this.searchProductsUsingParams = this.searchProductsUsingParams.bind(this);
 	}
 
@@ -38,8 +38,7 @@ export class SearchController {
 			 */
 
 			const dbFormattedEcommerceProductsMatrix =
-				(await this.externalProductUseCase.searchProducts(companyPrefix, searchTerm || '')) ?? [];
-
+				(await this.ecommerceUseCase.searchProducts(companyPrefix, searchTerm || '')) ?? [];
 			Logging.info(
 				`[search.controller] Retrieved ${dbFormattedEcommerceProductsMatrix.length} products from ${companyPrefix} Ecommerce`,
 			);
@@ -57,6 +56,10 @@ export class SearchController {
 				(productAndVariants) => productAndVariants,
 			);
 
+			const totalMainProducts = dbFormattedEcommerceProductsMatrix.length;
+			const totalInsertions = allMainProductsAndVariants.length;
+			const totalVariants = totalInsertions - totalMainProducts;
+
 			/** Add products and variants to the database */
 
 			const insertEcommerceDbFormattedPromises =
@@ -68,7 +71,15 @@ export class SearchController {
 
 			return res.status(200).json({
 				success: true,
-				message: `Stored a total of ${insertedProducts.length} products and variants from ${companyPrefix} using the search term: ${searchTerm} `,
+				message: `OK`,
+				result: {
+					message: `Stored products into own database`,
+					store: companyPrefix,
+					search_term: searchTerm,
+					stored_total: totalInsertions,
+					stored_products: totalMainProducts,
+					stored_variants: totalVariants,
+				},
 			});
 		} catch (err) {
 			res.status(500).json({

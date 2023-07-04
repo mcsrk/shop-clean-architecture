@@ -1,5 +1,5 @@
 import { Product } from '../product/product.entity';
 
-export interface IExternalProductRepository {
+export interface IECommerceRepository {
 	searchProducts(companyPrefix: string, searchTerm: string): Promise<Product[][]>;
 }

@@ -11,5 +11,5 @@ export interface IEcommerceAdapter {
 	 * @returns {Promise<Product[][]>} - Return an array of parsed type Product array.
 	 */
 	searchProducts(searchterm: string): Promise<Product[][]>;
-	adaptProductToDB(externalProduct: any): Product[];
+	adaptProductToDB(eCommerceProduct: any): Product[];
 }

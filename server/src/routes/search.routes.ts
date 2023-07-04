@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 // Repositories
-import { ExternalProductRepository } from '../infrastructure/repository/ecommerce.repository';
+import { ECommerceRepository } from '../infrastructure/repository/ecommerce.repository';
 import { ProductRepository } from '../infrastructure/repository/product.repository';
 
 // Use cases
@@ -15,19 +15,19 @@ const route = Router();
 /**
  * Initialize repository
  */
-const externalProductRepo = new ExternalProductRepository();
+const eCommerceRepo = new ECommerceRepository();
 const productRepo = new ProductRepository();
 
 /**
  * Initialize use cases
  */
-const externalProductUseCase = new EcommerceService(externalProductRepo);
-const productUseCase = new ProductService(productRepo);
+const eCommerceUseCases = new EcommerceService(eCommerceRepo);
+const productUseCases = new ProductService(productRepo);
 
 /**
  * Initialize product controller
  */
-const productController = new SearchController(externalProductUseCase, productUseCase);
+const productController = new SearchController(eCommerceUseCases, productUseCases);
 
 /**
  * Create routes
