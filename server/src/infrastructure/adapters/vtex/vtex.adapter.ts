@@ -1,33 +1,23 @@
 import axios, { AxiosInstance } from 'axios';
 
-import { IEcommerceAdapter } from '../ecommerce.adapter.interface';
-
 // Config
 import { CONFIG } from '../../config/config';
 
-// Custom Library
+// Custom library
 import Logging from '../../library/Logging';
-import { EcommerceProduct } from '../ecommerce.product.interface';
+
+// Interfaces
+import { IEcommerceAdapter } from '../ecommerce.adapter.interface';
 import { IProductInput, IProduct } from '../../../entities/product.interface';
+
+// Entities
 import { Product } from '../../../entities/product.entity';
 
 export class VtexAdapter implements IEcommerceAdapter {
 	private client: AxiosInstance;
-	private readonly defaultValues: EcommerceProduct;
 	private readonly defaultValuesDb: IProductInput;
 
 	constructor() {
-		this.defaultValues = {
-			external_id: 'no val at vtex adapter',
-			product_id: 'no val at vtex adapter',
-			sku: 'no val at vtex adapter',
-			image: '',
-			name: 'no val at vtex adapter',
-			short_description: 'no val at vtex adapter',
-			long_description: 'no val at vtex adapter',
-			price: '2',
-			variants: [],
-		};
 		this.defaultValuesDb = {
 			parent_id: null,
 			init: true,
@@ -101,59 +91,6 @@ export class VtexAdapter implements IEcommerceAdapter {
 		return response;
 	}
 
-	adaptProduct(vtexProduct: any): EcommerceProduct {
-		const { productId: id, items } = vtexProduct;
-
-		if (items.length === 0) {
-			Logging.warning(`[EcommerceProduct] vtexProduct Id: ${id} no tiene items`);
-		}
-
-		const variants = items.map((item: any) => {
-			const { itemId: variantId, sellers, referenceId, nameComplete, name } = item;
-
-			if (sellers.length === 0) {
-				Logging.warning(
-					`[EcommerceProduct] vtexProduct Id: ${id} - item: ${variantId} no tiene sellers: ${sellers}. La variante ${variantId} no tendra precio ni cantidad`,
-				);
-			}
-			if (referenceId.length === 0) {
-				Logging.warning(
-					`[EcommerceProduct] vtexProduct Id: ${id} - item: ${variantId} no tiene referenceId: ${referenceId}. La variante ${variantId} no tendra selected options `,
-				);
-			}
-			// se usa el  seller 0 para definir el precio y cantidad (un poco arbitrario)
-			const rootSeller = sellers[0];
-			const quantity = rootSeller?.commertialOffer?.AvailableQuantity ?? -1;
-			const price = rootSeller?.commertialOffer?.Price ?? -1;
-
-			const variantBody = {
-				legacyResourceId: variantId.toString(),
-				inventoryQuantity: quantity,
-				selectedOptions:
-					referenceId?.map((attr: any) => ({
-						name: attr.Key,
-						value: attr.Value,
-					})) ?? {},
-				displayName: nameComplete ?? name,
-				price: price,
-			};
-			return variantBody;
-		});
-
-		const ecommerceProductFormatted = Object.freeze({
-			external_id: vtexProduct.productId ?? this.defaultValues.external_id,
-			product_id: vtexProduct.sku ?? this.defaultValues.product_id,
-			sku: vtexProduct.productId ?? this.defaultValues.sku,
-			image: vtexProduct?.items?.images?.[0]?.imageUrl ?? this.defaultValues.image,
-			name: vtexProduct.productName ?? this.defaultValues.name,
-			short_description: vtexProduct.productName ?? this.defaultValues.short_description,
-			long_description: vtexProduct.description ?? this.defaultValues.long_description,
-			price: vtexProduct?.items[0].sellers[0].commertialOffer.Price ?? this.defaultValues.price,
-			variants: variants ?? this.defaultValues.variants,
-		});
-
-		return ecommerceProductFormatted;
-	}
 	adaptProductToDB(vtexProduct: any): IProduct[] {
 		let responseFormattedProducts: IProduct[] = [];
 

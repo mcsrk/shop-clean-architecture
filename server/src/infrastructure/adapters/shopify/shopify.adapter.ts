@@ -1,5 +1,4 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { IEcommerceAdapter } from '../ecommerce.adapter.interface';
 
 // Config
 import { CONFIG } from '../../config/config';
@@ -7,28 +6,19 @@ import { CONFIG } from '../../config/config';
 // Custom library
 import Logging from '../../library/Logging';
 
-import { EcommerceProduct } from '../ecommerce.product.interface';
+// Interfaces
+import { IEcommerceAdapter } from '../ecommerce.adapter.interface';
 import { IProduct, IProductInput } from '../../../entities/product.interface';
+
+// Entities
 import { Product } from '../../../entities/product.entity';
 
 export class ShopifyAdapter implements IEcommerceAdapter {
 	private client: AxiosInstance;
 	private authConfig: AxiosRequestConfig;
-	private readonly defaultValues: EcommerceProduct;
 	private readonly defaultValuesDb: IProductInput;
 
 	constructor() {
-		this.defaultValues = {
-			external_id: 'no val at shopify adapter',
-			product_id: 'no val at shopify adapter',
-			sku: 'no val at shopify adapter',
-			image: 'no val at shopify adapter',
-			name: 'no val at shopify adapter',
-			short_description: 'no val at shopify adapter',
-			long_description: 'no val at shopify adapter',
-			price: '1',
-			variants: [],
-		};
 		this.defaultValuesDb = {
 			parent_id: null,
 			init: true,
@@ -162,54 +152,6 @@ export class ShopifyAdapter implements IEcommerceAdapter {
 			console.error('Error searching products in Shopify:', error);
 			return [];
 		}
-	}
-
-	// adapts raw product data to server response product format
-	adaptProduct(shopifyProduct: any): EcommerceProduct {
-		const { id, variants, options } = shopifyProduct;
-
-		if (variants.length === 0) {
-			Logging.warning(`[EcommerceProduct] shopifyProduct Id: ${id} no tiene variants`);
-		}
-
-		if (options.length === 0) {
-			Logging.warning(`[EcommerceProduct] shopifyProduct Id: ${id} no tiene options`);
-		}
-
-		const variantAttributeName = options?.name ?? ''; //example: "Size" when the main product is a shoe
-
-		const parsedVariants = variants?.map((variant: any) => {
-			if (!variant.title) {
-				Logging.warning(
-					`[EcommerceProduct] shopifyProduct Id: ${id} - variant: ${variant.id} no tiene titulo: ${variant.title}. `,
-				);
-			}
-			const selectedOptions =
-				variantAttributeName && variant.title ? [{ name: variantAttributeName, value: variant.title }] : {};
-			return {
-				legacyResourceId: variant.id,
-				inventoryQuantity: variant.inventory_quantity,
-
-				selectedOptions,
-
-				displayName: variant.name ?? variant.title,
-				price: variant.price,
-			};
-		});
-
-		const ecommerceProductFormatted = Object.freeze({
-			external_id: shopifyProduct.id ?? this.defaultValues.external_id,
-			product_id: shopifyProduct.id ?? this.defaultValues.product_id,
-			sku: shopifyProduct.sku ?? this.defaultValues.sku,
-			image: shopifyProduct.images?.[0]?.src ?? this.defaultValues.image,
-			name: shopifyProduct.title ?? this.defaultValues.name,
-			short_description: shopifyProduct.body_html ?? this.defaultValues.short_description,
-			long_description: shopifyProduct.body_html ?? this.defaultValues.long_description,
-			price: shopifyProduct.price ?? this.defaultValues.price,
-			variants: parsedVariants ?? this.defaultValues.variants,
-		});
-
-		return ecommerceProductFormatted;
 	}
 
 	adaptProductToDB(shopifyProduct: any): IProduct[] {

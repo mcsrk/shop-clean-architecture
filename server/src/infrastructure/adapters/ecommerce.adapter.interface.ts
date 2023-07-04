@@ -1,5 +1,4 @@
 import { IProduct } from '../../entities/product.interface';
-import { EcommerceProduct } from './ecommerce.product.interface';
 
 export interface IEcommerceAdapter {
 	/**
@@ -12,6 +11,5 @@ export interface IEcommerceAdapter {
 	 * @returns {Promise<IProduct[][]>} - Return an array of parsed IProducts array.
 	 */
 	searchProducts(searchterm: string): Promise<IProduct[][]>;
-	adaptProduct(externalProduct: any): EcommerceProduct;
 	adaptProductToDB(externalProduct: any): IProduct[];
 }
