@@ -1,14 +1,21 @@
 import { Op } from 'sequelize';
 
-import { IProduct, ISearchParams } from '../../entities/product.interface';
-import { IProductRepository } from '../../entities/product.repository.interface';
-import { Product } from '../../entities/product.entity';
-
-import Logging from '../library/Logging';
+// Models
 import ProductModel from '../models/product.model';
 
+// Interfaces
+import { IProduct } from '../../entities/product.interface';
+import { IProductRepository } from '../../entities/product.repository.interface';
+
+// Entities
+import { FilterParams } from '../../entities/filter-params/filter-params.entity';
+import { Product } from '../../entities/product.entity';
+
+// Custom library
+import Logging from '../library/Logging';
+
 export class ProductRepository implements IProductRepository {
-	async selectProductsByFilters(searchParams: ISearchParams): Promise<IProduct[] | null> {
+	async selectProductsByFilters(searchParams: FilterParams): Promise<IProduct[] | null> {
 		const { search_text, price, price_operator } = searchParams;
 
 		const where: any = {};

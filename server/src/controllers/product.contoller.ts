@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { IProduct } from '../entities/product.interface';
 
 // Entities
-import { FilterParams } from '../entities/filter-params.entity';
+import { FilterParams } from '../entities/filter-params/filter-params.entity';
 import { ProductResponseEntity } from '../entities/response-product/product.response.entity';
 
 // Use cases

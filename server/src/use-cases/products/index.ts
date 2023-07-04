@@ -1,9 +1,9 @@
 // Interfaces
 import { IProductRepository } from '../../entities/product.repository.interface';
-import { ISearchParams } from '../../entities/product.interface';
 
 // Entities
 import { Product } from '../../entities/product.entity';
+import { FilterParams } from '../../entities/filter-params/filter-params.entity';
 
 // Use cases
 import { SelectProductsByfilters } from './select-products-by-filters';
@@ -18,7 +18,7 @@ export class ProductService {
 		this._insertDbFormattedProduct = new InsertDBFormattedProduct(productRepository);
 	}
 
-	selectProductsByFilters = (searchParams: ISearchParams) => {
+	selectProductsByFilters = (searchParams: FilterParams) => {
 		return this._selectProductsByFilters.selectProductsByFilters(searchParams);
 	};
 

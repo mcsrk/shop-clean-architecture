@@ -10,7 +10,7 @@ export class Product implements IProduct {
 	name: string;
 	price: number;
 	image: string;
-	json_product: any; // FIXME: could define specific json product Interfaces for vtex and shopify
+	json_product: any;
 
 	// created_at: Date;
 	// updated_at: Date;
