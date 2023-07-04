@@ -12,6 +12,7 @@ import { makeDatabase } from './infrastructure/database/database';
 import { syncModels } from './infrastructure/models';
 
 // Routes
+import searchRoute from './routes/search.routes';
 import productRoute from './routes/product.routes';
 
 const router = express();
@@ -63,7 +64,8 @@ const StartServer = () => {
 	});
 
 	/** Routes */
-	router.use('/search', productRoute);
+	router.use('/products', productRoute);
+	router.use('/search', searchRoute);
 
 	/** Healthcheck endpoint */
 	router.get('/ping', (_, res: Response) => res.status(200).json({ hello: 'world' }));
