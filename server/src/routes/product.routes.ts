@@ -1,7 +1,38 @@
-import express from 'express';
-import controller from '../controllers/product';
-const router = express.Router();
+import { Router } from 'express';
 
-router.get('/:companyPrefix', controller.searchProducts);
+// Repositories
+import { ExternalProductRepository } from '../infrastructure/repository/ecommerce.repository';
+import { ProductRepository } from '../infrastructure/repository/product.repository';
 
-export = router;
+// Use cases
+import ProductService from '../use-cases/products';
+import EcommerceService from '../use-cases/ecommerce';
+
+// Controllers
+import { ProductController } from '../controllers/product.contoller';
+
+const route = Router();
+/**
+ * Initialize repository
+ */
+const externalProductRepo = new ExternalProductRepository();
+const productRepo = new ProductRepository();
+
+/**
+ * Initialize use cases
+ */
+const externalProductUseCase = new EcommerceService(externalProductRepo);
+const productUseCase = new ProductService(productRepo);
+
+/**
+ * Initialize product controller
+ */
+const productController = new ProductController(externalProductUseCase, productUseCase);
+
+/**
+ * Create routes
+ */
+
+route.get(`/:companyPrefix`, productController.searchProductsUsingParams);
+
+export default route;

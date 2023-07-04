@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import http from 'http';
 
 // Custom modules
@@ -9,12 +9,10 @@ import { CONFIG } from './infrastructure/config/config';
 
 // Infrastructure
 import { makeDatabase } from './infrastructure/database/database';
-import { syncModels } from './infrastructure/models/models';
+import { syncModels } from './infrastructure/models';
 
 // Routes
-import productRoutes from './routes/product.routes';
-import customRoute from './routes/product.route';
-import externalProductRoute from './routes/ecommerce.route';
+import productRoute from './routes/product.routes';
 
 const router = express();
 makeDatabase()
@@ -32,7 +30,7 @@ syncModels()
 /** Only Start Server if Database is connected */
 const StartServer = () => {
 	/** Log the request */
-	router.use((req, res, next) => {
+	router.use((req: Request, res: Response, next: NextFunction) => {
 		/** Log the req */
 		Logging.info(`Incomming - METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`);
 
@@ -57,7 +55,7 @@ const StartServer = () => {
 		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
 		/** All of the options that can be used in this API */
 		if (req.method == 'OPTIONS') {
-			res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+			res.header('Access-Control-Allow-Methods', 'GET');
 			return res.status(200).json({});
 		}
 
@@ -65,16 +63,14 @@ const StartServer = () => {
 	});
 
 	/** Routes */
-	router.use('/search', productRoutes);
-	router.use('/ecommerce', externalProductRoute);
-	router.use('/changeThisRoute', customRoute);
+	router.use('/search', productRoute);
 
 	/** Healthcheck endpoint */
-	router.get('/ping', (req, res, next) => res.status(200).json({ hello: 'world' }));
+	router.get('/ping', (_, res: Response) => res.status(200).json({ hello: 'world' }));
 
 	/** Error handling on wrong Route */
-	router.use((req, res, next) => {
-		const error = new Error('API Route Not found');
+	router.use((req: Request, res: Response) => {
+		const error = new Error(`API Route Not found: [${req.method}] ${req.url}`);
 
 		Logging.error(error);
 
