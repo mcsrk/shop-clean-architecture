@@ -1,9 +1,7 @@
 import { createContext, useState } from 'react';
-
-// Este es el que tenemos que consumir
+import PropTypes from 'prop-types';
 export const FiltersContext = createContext();
 
-// Este es el que nos provee de acceso al contexto
 export function FiltersProvider({ children }) {
 	const [filters, setFilters] = useState({
 		searchTerm: '',
@@ -22,3 +20,6 @@ export function FiltersProvider({ children }) {
 		</FiltersContext.Provider>
 	);
 }
+FiltersProvider.propTypes = {
+	children: PropTypes.node,
+};

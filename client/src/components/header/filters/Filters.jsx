@@ -8,7 +8,7 @@ import './Filters.css';
 import SearchBar from './SearchBar';
 
 // Hooks
-import { useFilters } from '../../../hooks/useFilters.js';
+import { useFilters } from '../../../hooks/useFilters';
 
 export function Filters() {
 	const { filters, setFilters } = useFilters();
