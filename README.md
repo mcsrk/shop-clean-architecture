@@ -12,6 +12,7 @@ Accede al sitio desplegado en Vercel [google.com](https://google.com)
   - [Table of Content:](#table-of-content)
   - [Acerca de la app](#acerca-de-la-app)
   - [Screenshots](#screenshots)
+    - [Client](#client)
     - [Server Docs](#server-docs)
   - [Tecnologías](#tecnologías)
   - [Setup](#setup)
@@ -26,6 +27,8 @@ Accede al sitio desplegado en Vercel [google.com](https://google.com)
 TBD
 
 ## Screenshots
+### Client
+![Screenshot de cliente](client/public//Screenshot_de_busqeuda.JPG)
 
 ### Server Docs
 ![Diagrama de base de datos](server/docs/Diagrama%20ER%20de%20base%20de%20datos.png)
@@ -35,7 +38,7 @@ TBD
  
 
 ## Tecnologías
-`HTML`, `CSS`, `ReactJs`, `NodeJs`, `Express`, `Sequalize`, `PostgresSql` 
+`HTML`, `CSS`, `ReactJs`, `Redux Toolkit`, `NodeJs`, `TypeScript`, `Express`, `Sequalize`, `PostgresSql` 
 
 ## Setup
 
@@ -52,18 +55,23 @@ TBD
 
 ## Cómo abordé el problema
 
-Debido a que se tiene predefinida la estructura de retorno del servidor, se inició el desarrollo del cliente haciendo uso de React + Vite y de daimplementó el diseño de GUI propuesto, asímismo se aseguró tos simulados. Se cierto nivel de adaptabilidad a diferentes dispositivos. Se usó ContextProvider para almacenar de manera apropiada los datos de los filtros evitando el prop-drilling.
+Debido a que se tiene predefinida la estructura de retorno del servidor, se inició el desarrollo del cliente haciendo uso de React + Vite y se implemetó el diseño de GUI propuesto usando datos simulados. Se añadió adaptabilidad a diferentes dispositivos. Se usó Redux Toolkit con gestor de estados globales y evitar el prop-drilling.
 
-A nivel de servidor, se investigó la implementación de la arquitectura Clean, y el patrón de diseño más conveniente para el problema, cuya decisión final fue el patrón Adaptador. También se investigó la mejor alternativa para desplegar una base de datos PostgresSQL para el alcance de la prueba (usando Render.com). 
+A nivel de servidor, se investigó la implementación de la [Arquitectura Clean](https://merlino.agency/blog/clean-architecture-in-express-js-applications), y el patrón de diseño más conveniente para el problema, cuya decisión final fue el patrón [Adaptador](https://refactoring.guru/design-patterns/adapter). 
+
+También se investigó la mejor alternativa para desplegar una base de datos PostgresSQL para el alcance de la prueba, finalmente se optó por [render.com](https://render.com/))
 
 
 ## Status
-✅ Los datos simulados se muestran correctamente en el cliente.
 
 ✅ El servidor adapta los productos de Shopify y VTEX.
 ✅ El servidor almacena prodcutos externos en base de datos
 ✅ El servidor consulta propia base de datos usando filtros.
  
+✅ El cliente muestra correctamente la estructura de datos esperada.
+✅ El cliente se conecta con el servidor para consultar los endpoints disponibles.
+✅ El Cliente permite búsqueda unificada por texto.
+
 ## Créditos
 
 [Merlino - Clean Architecture in Express Js](https://merlino.agency/blog/clean-architecture-in-express-js-applications)
@@ -73,4 +81,4 @@ A nivel de servidor, se investigó la implementación de la arquitectura Clean, 
 
 ## License
 
-MIT license @ [Jhon Acosta](https://www.github.com/mcsrk)
+MIT license @[Jhon Acosta](https://www.github.com/mcsrk)
