@@ -1,4 +1,10 @@
+// Config
+import { IS_DEVELOPMENT } from '../../config';
+
+// Hooks
 import { useFilters } from '../../hooks/useFilters';
+
+// Styles
 import './Footer.css';
 
 export function Footer() {
@@ -14,7 +20,7 @@ export function Footer() {
 			<h5>
 				<span>Jhon Acosta</span>
 			</h5>
-			<div>{JSON.stringify(filters)}</div>
+			{IS_DEVELOPMENT && <div>{JSON.stringify(filters)}</div>}
 		</footer>
 	);
 }
