@@ -18,7 +18,7 @@ export class FilterParams implements IFilterParams {
 		}
 
 		/** Validation: is price a valid number or can be parsed into a valid number? otherwise delete it. */
-		if (filterObj.price === '') {
+		if (filterObj.price === '' || filterObj.price === '0') {
 			Logging.warning(`[Filter Params Entity] price has a invalid value, it'll be ignored.`);
 			delete filterObj.price;
 		}
