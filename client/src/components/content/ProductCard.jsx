@@ -13,17 +13,19 @@ export function ProductCard({ product }) {
 	return (
 		<li className="product-card">
 			<img src={image} alt={name} />
-			<div className="info">
-				<p>
-					<span className="category">{category}</span>
-				</p>
-				<p className="name">{name}</p>
-				<p>
-					<strong className="price">${addThousandSeparators(price)}</strong>
-				</p>
-			</div>
-			<div className="actions">
-				<button>Seleccionar</button>
+			<div className="card-block">
+				<div className="info">
+					<p>
+						<span className="category">{category}</span>
+					</p>
+					<p className="name">{name}</p>
+					<p>
+						<strong className="price">${addThousandSeparators(price)}</strong>
+					</p>
+				</div>
+				<div className="actions">
+					<button>Seleccionar</button>
+				</div>
 			</div>
 		</li>
 	);
