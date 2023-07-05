@@ -5,7 +5,7 @@
 
 	color-scheme: light;
 	color: rgba(0, 0, 0, 0.87);
-	background-color: #fafafa;
+	background-color: #fdfdfd;
 
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;
@@ -43,7 +43,7 @@ button {
 	transition: all 0.25s;
 }
 button:hover {
-	border-width: #464bb2;
+	border-color: #464bb2;
 	background-color: #222;
 	color: #fff;
 }

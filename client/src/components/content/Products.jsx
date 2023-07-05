@@ -12,7 +12,7 @@ import { ProductCard } from './ProductCard';
 
 export function Products() {
 	const { filters } = useFilters();
-	const { products, loading, fetchProducts } = useProducts(filters);
+	const { products, fetchProducts } = useProducts(filters);
 
 	useEffect(() => {
 		console.log(filters);
@@ -22,7 +22,6 @@ export function Products() {
 
 	return (
 		<section className="products">
-			{loading.toString()}
 			<ul>
 				{products?.map((product) => {
 					return <ProductCard key={`product-card-${product.product_id}`} product={product} />;
