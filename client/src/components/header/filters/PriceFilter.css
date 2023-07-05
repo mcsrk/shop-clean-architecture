@@ -1,0 +1,77 @@
+.radio-group input[type='radio'] {
+	display: none;
+}
+
+.radio-group {
+	display: flex;
+	text-align: center;
+	align-items: center;
+	justify-content: center;
+	gap: 4px;
+	max-width: 200px;
+	min-width: 150px;
+}
+
+.radio-group label {
+	padding: 4px 8px;
+	font-size: 12px;
+	background-color: #333;
+	color: #bbb;
+	border-radius: 50px;
+	cursor: pointer;
+	border: 1px solid #646cff;
+	transition: all 0.25s;
+}
+
+.radio-group input[type='radio']:checked + label {
+	background-color: #111;
+	color: #fff;
+	border-color: #464bb2;
+}
+
+.radio-group input[type='radio']:hover + label {
+	background-color: #111;
+	color: #fff;
+	border-color: #464bb2;
+}
+
+.price-container {
+	margin: auto;
+	width: 45%;
+	display: flex;
+	min-width: 200px;
+}
+
+.price-container .input-wrapper {
+	background: #fff;
+	border-radius: 8px;
+	display: flex;
+	padding: 0 10px;
+	border: 1px solid #aaa;
+	height: 2rem;
+	transition: all 0.3s ease;
+}
+
+.input-wrapper:focus-within {
+	border: 1px solid #777;
+	box-shadow: 0 6px 10px #eee;
+}
+
+.input-wrapper input {
+	background-color: transparent;
+	height: 100%;
+	width: 100%;
+	border: none;
+	outline: none;
+	color: #222;
+	margin-left: 5px;
+}
+.input-wrapper input::placeholder {
+	color: #aaa;
+}
+.currency-icon {
+	display: flex;
+	align-items: center;
+	font-size: 1rem;
+	color: #777;
+}
