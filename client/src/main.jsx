@@ -3,12 +3,11 @@ import './index.css';
 
 //Components
 import App from './App';
-
-// Context
-import { FiltersProvider } from './context/filters.jsx';
+import { store } from './store/store';
+import { Provider } from 'react-redux';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-	<FiltersProvider>
+	<Provider store={store}>
 		<App />
-	</FiltersProvider>,
+	</Provider>,
 );

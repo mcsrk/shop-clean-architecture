@@ -10,26 +10,24 @@ import './SearchBar.css';
 
 // Hooks
 import { useFilters } from '../../../hooks/useFilters';
+import { useProducts } from '../../../hooks/useProducts';
 
 const SearchBar = () => {
-	const { setFilters } = useFilters();
-	const [isLoading, setIsLoading] = useState(false);
+	const { filters, setFilterSearchText } = useFilters();
+
+	const { loading } = useProducts(filters);
+
 	const [value, setValue] = useState('');
 
 	const searchFilterId = useId();
 
 	const handleChangeSearch = (event) => {
-		setIsLoading(true);
 		setValue(event.target.value);
 		debounced(event.target.value);
 	};
 
 	const debounced = useDebouncedCallback((typedValue) => {
-		setFilters((prevState) => ({
-			...prevState,
-			searchTerm: typedValue,
-		}));
-		setIsLoading(false);
+		setFilterSearchText(typedValue);
 	}, DEBOUNCE_DELAY);
 
 	return (
@@ -45,7 +43,7 @@ const SearchBar = () => {
 					title="Escribe el nombre de un producto"
 				/>
 
-				{isLoading ? (
+				{loading ? (
 					<span className="loading" role="status">
 						<AiOutlineLoading3Quarters />
 					</span>

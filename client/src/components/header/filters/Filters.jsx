@@ -11,28 +11,13 @@ import SearchBar from './SearchBar';
 import { useFilters } from '../../../hooks/useFilters';
 
 export function Filters() {
-	const { filters, setFilters } = useFilters();
+	const { filters, setFilterPrice } = useFilters();
 
 	/** useId Hook to generate an unique Id for input and label all over the App */
+	const priceFilterId = useId();
 
-	const minPriceFilterId = useId();
-	const categoryFilterId = useId();
-
-	const handleChangeMinPrice = (event) => {
-		setFilters((prevState) => ({
-			...prevState,
-			minPrice: event.target.value,
-		}));
-	};
-
-	const handleChangeCategory = (event) => {
-		// ⬇️ ESTO HUELE MAL
-		// estamos pasando la función de actualizar estado
-		// nativa de React a un componente hijo
-		setFilters((prevState) => ({
-			...prevState,
-			category: event.target.value,
-		}));
+	const handleChangePrice = (event) => {
+		setFilterPrice(event.target.value);
 	};
 
 	return (
@@ -45,26 +30,11 @@ export function Filters() {
 					<AiOutlineShop className="icon" />
 				</button>
 			</p>
-			<div>
-				<label htmlFor={categoryFilterId}>Categoría</label>
-				<select id={categoryFilterId} onChange={handleChangeCategory}>
-					<option value="all">Todas</option>
-					<option value="laptops">Portátiles</option>
-					<option value="smartphones">Celulares</option>
-				</select>
-			</div>
 
 			<div>
-				<label htmlFor={minPriceFilterId}>Precio a partir de:</label>
-				<input
-					type="range"
-					id={minPriceFilterId}
-					min="0"
-					max="1000"
-					onChange={handleChangeMinPrice}
-					value={filters.minPrice}
-				/>
-				<span>${filters.minPrice}</span>
+				<label htmlFor={priceFilterId}>Precio: </label>
+				<input type="range" id={priceFilterId} min="0" max="1000" onChange={handleChangePrice} value={filters.price} />
+				<span>${filters.price}</span>
 			</div>
 		</section>
 	);
