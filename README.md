@@ -2,29 +2,46 @@
 
 Unificación de productos de Shopify y Vtex por medio de NodeJs + Express, los cuales son consultados desde un cliente hecho en ReactJs.
 
+## Tecnologías
+`HTML`, `CSS`, `ReactJs`, `Redux Toolkit`, `NodeJs`, `TypeScript`, `Express`, `Sequalize`, `PostgresSql` 
+
 ## Demo link:
 Accede al sitio desplegado en Vercel [google.com](https://google.com)
 
 ## Table of Content:
 
 - [E-commerce unificado](#e-commerce-unificado)
+  - [Tecnologías](#tecnologías)
   - [Demo link:](#demo-link)
   - [Table of Content:](#table-of-content)
   - [Acerca de la app](#acerca-de-la-app)
-  - [Screenshots](#screenshots)
-    - [Client](#client)
-    - [Server Docs](#server-docs)
-  - [Tecnologías](#tecnologías)
   - [Setup](#setup)
     - [Servidor](#servidor)
     - [Cliente](#cliente)
+  - [Screenshots](#screenshots)
+    - [Client](#client)
+    - [Server Docs](#server-docs)
   - [Cómo abordé el problema](#cómo-abordé-el-problema)
   - [Status](#status)
-  - [Créditos](#créditos)
+  - [Referentes](#referentes)
   - [License](#license)
 
 ## Acerca de la app
-TBD
+App fullstack que unifica productos de ecommerce diferentes, como VTEX y Shopify. 
+
+## Setup
+
+### Servidor
+- Descargar el repositorio
+- Acceder a la carpeta del servidor usando `cd server/` 
+- Instalar las dependencias del servidor usando `npm install`
+- Crear un `.env` propio usando como referencia `./server/.env.exmaple` 
+- Correr el servidor usando `nodemon` 
+
+### Cliente
+- Acceder a la carpeta del cliente usando  `cd client/` 
+- Instalar las dependencias del servidor usando `npm install`
+- Correr el cliente usand `npm run dev` 
 
 ## Screenshots
 ### Client
@@ -36,22 +53,6 @@ TBD
 ![Diagrama de secuencia /search](server/docs/Diagrama%20de%20secuencia%20-%20Search.png)
 ![Diagrama de secuencia /products](server/docs/Diagrama%20de%20secuencia%20-%20Products.png)
  
-
-## Tecnologías
-`HTML`, `CSS`, `ReactJs`, `Redux Toolkit`, `NodeJs`, `TypeScript`, `Express`, `Sequalize`, `PostgresSql` 
-
-## Setup
-
-### Servidor
-- Descargar el repositorio
-- Acceder a la carpeta del servidor usando `cd server/` 
-- Instalar las dependencias del servidor usando `npm install`
-- Correr el servidor usando `nodemon` 
-
-### Cliente
-- Acceder a la carpeta del cliente usando  `cd client/` 
-- Instalar las dependencias del servidor usando `npm install`
-- Correr el cliente usand `npm run dev` 
 
 ## Cómo abordé el problema
 
@@ -72,7 +73,7 @@ También se investigó la mejor alternativa para desplegar una base de datos Pos
 ✅ El cliente se conecta con el servidor para consultar los endpoints disponibles.
 ✅ El Cliente permite búsqueda unificada por texto.
 
-## Créditos
+## Referentes
 
 [Merlino - Clean Architecture in Express Js](https://merlino.agency/blog/clean-architecture-in-express-js-applications)
 [Refactoring Guru - Adapter](https://refactoring.guru/design-patterns/adapter)
