@@ -21,7 +21,6 @@ export function useProducts(filters) {
 
 	const fetchProducts = useCallback(async (_filters) => {
 		const { search_text } = _filters;
-		if (_filters === previousSearch.current) return;
 
 		try {
 			dispatch(toggleLoading());
@@ -31,7 +30,7 @@ export function useProducts(filters) {
 
 			await searchEcommerceProducts({ companyPrefix: 'HeavenStore', search_text });
 			const newProducts = await getProducts(_filters);
-			console.log('new products: ', newProducts);
+
 			dispatch(setProducts(newProducts));
 		} catch (e) {
 			setError(e.message);

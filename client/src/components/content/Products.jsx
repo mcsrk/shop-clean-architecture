@@ -15,6 +15,7 @@ export function Products() {
 	const { products, loading, fetchProducts } = useProducts(filters);
 
 	useEffect(() => {
+		console.log(filters);
 		fetchProducts(filters);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [filters]);

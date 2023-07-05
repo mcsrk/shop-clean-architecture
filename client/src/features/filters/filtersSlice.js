@@ -2,8 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
 	search_text: '',
-	price: null,
-	price_operator: null,
+	price: 0,
+	price_operator: '',
 };
 
 export const filtersSlice = createSlice({
