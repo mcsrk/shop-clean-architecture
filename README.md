@@ -43,7 +43,7 @@ TBD
 ## Setup
 
 ### Servidor
-- Descargar el prositorio
+- Descargar el repositorio
 - Acceder a la carpeta del servidor usando `cd server/` 
 - Instalar las dependencias del servidor usando `npm install`
 - Correr el servidor usando `nodemon` 
