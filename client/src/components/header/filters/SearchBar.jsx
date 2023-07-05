@@ -1,21 +1,36 @@
 import { useId, useState } from 'react';
-import { useFilters } from '../../../hooks/useFilters';
 import { AiOutlineLoading3Quarters, AiOutlineSearch } from 'react-icons/ai';
+import { useDebouncedCallback } from 'use-debounce';
+
+// Config
+import { DEBOUNCE_DELAY } from '../../../config';
 
 // Styles
 import './SearchBar.css';
 
+// Hooks
+import { useFilters } from '../../../hooks/useFilters';
+
 const SearchBar = () => {
-	const { filters, setFilters } = useFilters();
+	const { setFilters } = useFilters();
 	const [isLoading, setIsLoading] = useState(false);
+	const [value, setValue] = useState('');
 
 	const searchFilterId = useId();
-	const handlechangeSearch = (event) => {
+
+	const handleChangeSearch = (event) => {
+		setIsLoading(true);
+		setValue(event.target.value);
+		debounced(event.target.value);
+	};
+
+	const debounced = useDebouncedCallback((typedValue) => {
 		setFilters((prevState) => ({
 			...prevState,
-			searchTerm: event.target.value,
+			searchTerm: typedValue,
 		}));
-	};
+		setIsLoading(false);
+	}, DEBOUNCE_DELAY);
 
 	return (
 		<div className="search-container">
@@ -24,8 +39,8 @@ const SearchBar = () => {
 				<input
 					type="text"
 					id={searchFilterId}
-					value={filters.searchTerm}
-					onChange={handlechangeSearch}
+					value={value}
+					onChange={handleChangeSearch}
 					placeholder="Busca un producto"
 					title="Escribe el nombre de un producto"
 				/>
