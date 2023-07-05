@@ -1,12 +1,12 @@
 import { createRequest, throwErrors } from './globalService';
 
-export const getProducts = async ({ search, price, priceOperator }) => {
+export const getProducts = async ({ search_text, price, price_operator }) => {
 	try {
 		const response = await createRequest().get(`/products`, {
 			params: {
-				search_text: search,
-				price: price,
-				price_operator: priceOperator,
+				search_text,
+				price,
+				price_operator,
 			},
 		});
 		return response.data.result.items;
@@ -15,11 +15,11 @@ export const getProducts = async ({ search, price, priceOperator }) => {
 	}
 };
 
-export const searchEcommerceProducts = async ({ companyPrefix, search }) => {
+export const searchEcommerceProducts = async ({ companyPrefix, search_text }) => {
 	try {
 		const response = await createRequest().get(`search/${companyPrefix}`, {
 			params: {
-				search_text: search,
+				search_text,
 			},
 		});
 		return response.data;
