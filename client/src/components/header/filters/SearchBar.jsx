@@ -35,6 +35,7 @@ const SearchBar = () => {
 			<label htmlFor={searchFilterId}>Busca lo que quieras y cámbialo fácilemente</label>
 			<div className="input-wrapper">
 				<input
+					disabled={loading}
 					type="text"
 					id={searchFilterId}
 					value={value}
