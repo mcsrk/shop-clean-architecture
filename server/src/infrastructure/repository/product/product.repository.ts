@@ -63,9 +63,6 @@ export class ProductRepository implements IProductRepository {
 
 			const insertedProduct = await ProductModel.create(product);
 
-			Logging.warning(
-				`[Product Repository] Inserted prod: ExtId:${product.external_id} - ${product.name.slice(0, 10) + '...'}`,
-			);
 			return insertedProduct;
 		} catch (error: any) {
 			const message = error.message;

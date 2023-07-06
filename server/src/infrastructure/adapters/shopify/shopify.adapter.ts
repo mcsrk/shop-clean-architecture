@@ -152,6 +152,61 @@ export class ShopifyAdapter implements IEcommerceAdapter {
 		}
 	}
 
+	private async getAllProducts(): Promise<any[]> {
+		try {
+			/** Retrieve initial page of products*/
+			Logging.info(`[Shopify Adapter] Retrieving all products...`);
+
+			let allProducts: any[] = [];
+			const route = '/products.json';
+			const response = await this.requestShopifyAPI(route);
+
+			const linkHeader = response.headers.link;
+			const products = response.data.products;
+
+			allProducts.push(...products);
+
+			/** Get the next page results Link if exists */
+			let nextPageUrl = this.getNextPageUrlFromLinkHeader(linkHeader);
+
+			/** Retrieve rest of the product's as long as there is a next page results link */
+
+			while (nextPageUrl) {
+				Logging.info(`[Shopify Adapter] Partial Products Retrieved: ${allProducts.length}`);
+
+				const currentPageResponse = await this.requestShopifyNextPage(nextPageUrl);
+				const currentPageProducts = currentPageResponse.data.products;
+				const nextPageLinkHeader = currentPageResponse.headers.link;
+
+				allProducts.push(...currentPageProducts);
+
+				nextPageUrl = this.getNextPageUrlFromLinkHeader(nextPageLinkHeader);
+			}
+
+			Logging.info(`[Shopify Adapter] Retrived All Products: ${products.length}`);
+
+			return products;
+		} catch (error: any) {
+			console.error('Error searching products in Shopify:', error);
+			return [];
+		}
+	}
+
+	async fetchAllProducts(): Promise<Product[][]> {
+		try {
+			/** Get all products availabe and format them*/
+			const allProducts = await this.getAllProducts();
+			const productsFormatedToDb = allProducts.map((product) => this.adaptProductToDB(product));
+
+			Logging.info(`[Shopify Adapter] Total products in GET ALL SEARCH: ${productsFormatedToDb.length}`);
+
+			return productsFormatedToDb;
+		} catch (error: any) {
+			console.error('Error searching ALL products in Shopify:', error);
+			return [];
+		}
+	}
+
 	adaptProductToDB(shopifyProduct: any): Product[] {
 		let responseFormattedProducts: Product[] = [];
 
