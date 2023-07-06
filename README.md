@@ -41,7 +41,7 @@ App fullstack que unifica productos de ecommerce diferentes, como VTEX y Shopify
 ### Cliente
 - Acceder a la carpeta del cliente usando  `cd client/` 
 - Instalar las dependencias del servidor usando `npm install`
-- Correr el cliente usand `npm start` 
+- Correr el cliente usando `npm run dev` (por default accede al servidor por medio de localhost:8000)
 
 ## Screenshots
 ### Client
