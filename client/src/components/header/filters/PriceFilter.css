@@ -1,3 +1,10 @@
+.price-container {
+	margin: auto;
+	width: 45%;
+	display: flex;
+	min-width: 100px;
+}
+
 .radio-group input[type='radio'] {
 	display: none;
 }
@@ -55,13 +62,6 @@
 	border-color: #464bb2;
 }
 
-.price-container {
-	margin: auto;
-	width: 45%;
-	display: flex;
-	min-width: 200px;
-}
-
 .price-container .input-wrapper {
 	background: #fff;
 	border-radius: 8px;
@@ -97,4 +97,18 @@
 	align-items: center;
 	font-size: 1rem;
 	color: #777;
+}
+@media (max-width: 900px) {
+	.price-container {
+		flex-direction: column;
+	}
+
+	.radio-group {
+		margin: 0 auto;
+	}
+}
+@media (max-width: 600px) {
+	.price-container {
+		width: 65%;
+	}
 }
