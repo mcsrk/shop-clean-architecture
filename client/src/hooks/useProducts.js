@@ -49,7 +49,7 @@ export function useProducts(filters) {
 				dispatch(setStatus('Estructurando productos...'));
 				const newProducts = await getProducts(_filters);
 
-				dispatch(setStatus(null));
+				dispatch(setStatus(newProducts.length ? null : `Sin productos para : "${search_text}"`));
 				dispatch(setProducts(newProducts));
 			} catch (e) {
 				dispatch(setError(e.message));
