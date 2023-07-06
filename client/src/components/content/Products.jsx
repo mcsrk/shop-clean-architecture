@@ -24,11 +24,13 @@ export function Products() {
 	return (
 		<section className="products">
 			<Status />
+
 			<ul>
 				{products?.map((product) => {
 					return <ProductCard key={`product-card-${product.product_id}`} product={product} />;
 				})}
 			</ul>
+
 			<Error message={error} />
 		</section>
 	);

@@ -1,8 +1,7 @@
 .status-message {
 	height: 20px;
 	margin: 0 auto;
-	width: 50%;
-	max-width: 300px;
+	width: 300px;
 	border-radius: 8px;
 	color: #777;
 	font-size: 0.75rem;

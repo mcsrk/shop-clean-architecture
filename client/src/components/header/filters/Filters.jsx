@@ -13,13 +13,18 @@ export function Filters() {
 	return (
 		<section className="filters">
 			<SearchBar /> <PriceFilter />
-			<p className="extra-action">
-				¿Aún no te decides? <span>BÚSCALO EN LA TIENDA AQUÍ</span>
-				{' >'}
-				<button className="shop-button">
-					<AiOutlineShop className="icon" />
-				</button>
-			</p>
+			<div className="extra-action">
+				<div>
+					<p>¿Aún no te decides?</p>
+				</div>
+				<div>
+					<span> BÚSCALO EN LA TIENDA AQUÍ</span>
+					{' >'}
+					<button className="shop-button">
+						<AiOutlineShop className="icon" />
+					</button>
+				</div>
+			</div>
 		</section>
 	);
 }
