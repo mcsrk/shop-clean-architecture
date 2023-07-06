@@ -2,6 +2,25 @@
 
 Unificación de productos de Shopify y Vtex por medio de NodeJs + Express, los cuales son consultados desde un cliente hecho en ReactJs.
 
+## Tabla de contenido:
+
+- [E-commerce unificado](#e-commerce-unificado)
+  - [Tabla de contenido:](#tabla-de-contenido)
+  - [Tecnologías](#tecnologías)
+  - [Estado](#estado)
+  - [Acerca de la app](#acerca-de-la-app)
+  - [Setup](#setup)
+    - [Servidor](#servidor)
+    - [Cliente](#cliente)
+  - [Screenshots](#screenshots)
+    - [Cliente](#cliente-1)
+    - [Documentación del servidor](#documentación-del-servidor)
+  - [Cómo se abordó el problema](#cómo-se-abordó-el-problema)
+      - [Poblar la base de datos con cada consulta](#poblar-la-base-de-datos-con-cada-consulta)
+      - [Poblar la base de datos desde el inicio](#poblar-la-base-de-datos-desde-el-inicio)
+  - [Referentes](#referentes)
+  - [License](#license)
+
 ## Tecnologías
 `HTML` `CSS` `ReactJs` `Redux Toolkit` 
 `NodeJs` `TypeScript` `Express` `Sequalize` `PostgresSql` 
@@ -16,23 +35,6 @@ Unificación de productos de Shopify y Vtex por medio de NodeJs + Express, los c
 - ✅ El cliente se conecta con el servidor para consultar los endpoints disponibles.
 - ✅ El cliente permite búsqueda unificada por texto.
 - ✅ El cliente permite búsqueda unificada por precio + operador.
-
-## Tabla de contenido:
-
-- [E-commerce unificado](#e-commerce-unificado)
-  - [Tecnologías](#tecnologías)
-  - [Estado](#estado)
-  - [Tabla de contenido:](#tabla-de-contenido)
-  - [Acerca de la app](#acerca-de-la-app)
-  - [Setup](#setup)
-    - [Servidor](#servidor)
-    - [Cliente](#cliente)
-  - [Screenshots](#screenshots)
-    - [Cliente](#cliente-1)
-    - [Documentación del servidor](#documentación-del-servidor)
-  - [Cómo se abordó el problema](#cómo-se-abordó-el-problema)
-  - [Referentes](#referentes)
-  - [License](#license)
 
 ## Acerca de la app
 App fullstack que unifica productos de ecommerce diferentes, como VTEX y Shopify. 
@@ -54,7 +56,7 @@ App fullstack que unifica productos de ecommerce diferentes, como VTEX y Shopify
   ```  
 - Crear un `.env` propio en `./server` usando como referencia  
   > Nota: usar `./server/.env.exmaple` como ejemplo.
-- Correr el servidor usando  
+- Correr el servidor en  [`http://localhost:8000/`](http://localhost:8000/) usando  
   ```sh
     npm start
   ```  
@@ -68,11 +70,11 @@ App fullstack que unifica productos de ecommerce diferentes, como VTEX y Shopify
   ```sh
     npm install
   ```  
-- Correr el cliente usando  
+- Correr el cliente en  [`http://localhost:5173/`](http://localhost:5173/)usando  
   ```sh
     npm run dev
   ```  
-  > Nota:   por default accede al servidor por medio de `localhost:8000`.
+  > Nota:   por default accede al servidor por medio de [`http://localhost:8000/`](http://localhost:8000/).
 
 ## Screenshots
 ### Cliente
@@ -87,13 +89,35 @@ App fullstack que unifica productos de ecommerce diferentes, como VTEX y Shopify
 
 ## Cómo se abordó el problema
 
-Debido a que se tiene predefinida la estructura de retorno del servidor, se inició el desarrollo del cliente haciendo uso de React + Vite y se implemetó el diseño de GUI propuesto usando datos simulados. Se añadió adaptabilidad a diferentes dispositivos. Se usó Redux Toolkit con gestor de estados globales y evitar el prop-drilling.
+Se inició el desarrollo del cliente haciendo uso de React + Vite y se implemetó el diseño de GUI propuesto usando datos simulados. Se añadió adaptabilidad a diferentes dispositivos. Se usó Redux Toolkit con gestor de estados globales y evitar el prop-drilling.
 
-A nivel de servidor, se investigó la implementación de la [Arquitectura Clean](https://merlino.agency/blog/clean-architecture-in-express-js-applications), y el patrón de diseño más conveniente para el problema, cuya decisión final fue el patrón [Adaptador](https://refactoring.guru/design-patterns/adapter). 
+A nivel de servidor, se investigó la implementación de la [Arquitectura Clean](https://merlino.agency/blog/clean-architecture-in-express-js-applications), y el patrón de diseño más conveniente para el problema: [Patrón Adaptador](https://refactoring.guru/design-patterns/adapter). 
 
-También se investigó la mejor alternativa para desplegar una base de datos PostgresSQL para el alcance de la prueba, finalmente se optó por [render.com](https://render.com/))
+Se creó una base de datos PostgresSQL en [render.com](https://render.com/), ya que  se ajusta al alcance de la prueba. En cuanto a modelo de datos, se estableció una relación 1:N de Products a Products para representar los Productos con variantes.
 
+Para el flujo de búsqueda en los diferentes Ecommerce se tuvo en cuenta 2 alternativas: 
+- Poblar la base de datos con cada consulta.
+- Poblar la base de datos desde el inicio.
 
+#### Poblar la base de datos con cada consulta
+Cada cambio de parámetros hechos desde el cliente dispara un consulta a la ruta `/search/${companyPrefix}` para cada ecommerce disponible : 
+- Esta consulta busca un máximo de 10 productos que coincidan con el filtro `search_text`, acto seguido inserta en la base de datos propia los resultados.
+
+Una vez finalizadas las peticiones a los ecommerce, el cliente ejecuta una petición `/products`:
+- Esta consulta ejecuta una busqueda a la base de datos propia, la cual tiene en cuenta los campos `search_text`, `price` y `price_operartor`. Retornando los resultados esperados. 
+
+  > Esta estrategía permite poblar la base de datos progresivamente con cada consulta hecha desde el cliente. A su vez, mantiene en la base de datos propia productos que hayan podido ser agregados a los  ECommerce recientemente.
+  
+#### Poblar la base de datos desde el inicio
+
+En el momento en el que se renderiza el cliente se ejecuta `/search/all/${companyPrefix}` para cada ecommerce disponible : 
+- Esta consulta obtiene todos los productos disponibles por medio de paginación, acto seguido los inserta en la base de datos propia. 
+ > Nota - `/search/all/${companyPrefix}` Puede tandar minutos en completar según la cantidad de productos. En este caso tardó 20 segundos.
+
+De manera restictiva, el cliente tendrá que esperar a que la "migración" de productos se complete para poder realizar consultas a `/products` por medio de los filtros disponibles. 
+
+  > Esta estrategía permite migrar los productos de los Ecommerce a la DB propia, lo cual reduce los tiempos de búsqueda de `/products`. Sin embargo, es bloqueante ya que las consultas realizadas durante la migración podrían no retornar productos. 
+  Además, solo se mantiene una versión de los productos de los Ecommerce sincronizada ya que si, un producto nuevo es añadido a algún Ecommerce, el cliente web no sabrá de su existencia hasta que la migración se haga otra vez.
 
 
 ## Referentes
