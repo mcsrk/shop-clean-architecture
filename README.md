@@ -41,9 +41,12 @@ App fullstack que unifica productos de ecommerce diferentes, como VTEX y Shopify
 
 ## Setup
 
-- Descargar el repositorio
+- Descargar el repositorio y acceder al código
   ```sh
     git clone https://github.com/mcsrk/shop-clean-architecture.git
+  ``` 
+  ```sh
+    cd shop-clean-architecture
   ``` 
 ### Servidor
 - Acceder a la carpeta del servidor usando 
