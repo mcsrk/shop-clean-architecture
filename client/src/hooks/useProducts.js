@@ -1,8 +1,8 @@
-import { useRef, useState, useCallback, useMemo } from 'react';
+import { useRef, useCallback, useMemo } from 'react';
 
 // Redux Toolkit
 import { useDispatch, useSelector } from 'react-redux';
-import { setProducts, toggleLoading } from '../store/slices/products/productsSlice';
+import { setProducts, toggleLoading, setError } from '../store/slices/products/productsSlice';
 
 // Services
 import { getProducts, searchEcommerceProducts } from '../services/productService.js';
@@ -13,10 +13,8 @@ export function useProducts(filters) {
 	// Retrieve global state variables
 	const products = useSelector((state) => state.products.products);
 	const loading = useSelector((state) => state.products.loading);
+	const error = useSelector((state) => state.products.error);
 
-	// el error no se usa pero puedes implementarlo
-	// si quieres:
-	const [, setError] = useState(null);
 	const previousSearch = useRef(filters);
 
 	const fetchProducts = useCallback(
@@ -35,7 +33,7 @@ export function useProducts(filters) {
 
 			try {
 				dispatch(toggleLoading());
-				setError(null);
+				dispatch(setError(null));
 				previousSearch.current = _filters;
 
 				/** Only request Ecommerce search when search term has changed.
@@ -49,7 +47,7 @@ export function useProducts(filters) {
 
 				dispatch(setProducts(newProducts));
 			} catch (e) {
-				setError(e.message);
+				dispatch(setError(e.message));
 			} finally {
 				dispatch(toggleLoading());
 			}
@@ -63,8 +61,8 @@ export function useProducts(filters) {
 
 	return {
 		fetchProducts,
-		//products,
 		products: sortedProducts,
 		loading,
+		error,
 	};
 }

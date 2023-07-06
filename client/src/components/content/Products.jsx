@@ -9,10 +9,11 @@ import { useFilters } from '../../hooks/useFilters';
 
 // Components
 import { ProductCard } from './ProductCard';
+import Error from '../error/Error';
 
 export function Products() {
 	const { filters } = useFilters();
-	const { products, fetchProducts } = useProducts(filters);
+	const { products, fetchProducts, error } = useProducts(filters);
 
 	useEffect(() => {
 		fetchProducts(filters);
@@ -26,6 +27,7 @@ export function Products() {
 					return <ProductCard key={`product-card-${product.product_id}`} product={product} />;
 				})}
 			</ul>
+			<Error message={error} />
 		</section>
 	);
 }
