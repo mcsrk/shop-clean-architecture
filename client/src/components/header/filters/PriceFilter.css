@@ -1,0 +1,114 @@
+.price-container {
+	margin: auto;
+	width: 45%;
+	display: flex;
+	min-width: 100px;
+}
+
+.radio-group input[type='radio'] {
+	display: none;
+}
+
+.radio-group {
+	display: flex;
+	text-align: center;
+	align-items: center;
+	justify-content: center;
+	gap: 4px;
+	max-width: 200px;
+	min-width: 100px;
+	margin-left: auto;
+}
+
+.radio-group label {
+	padding: 4px 8px;
+	font-size: 12px;
+	background-color: #333;
+	color: #aaa;
+	border-radius: 50px;
+	cursor: pointer;
+	border: 1px solid #646cff;
+	transition: all 0.25s;
+}
+
+.radio-group input[type='radio']:checked + label {
+	background-color: #111;
+	color: #fff;
+	border-color: #464bb2;
+}
+
+.radio-group input[type='radio']:hover + label {
+	background-color: #111;
+	color: #fff;
+	border-color: #464bb2;
+}
+.radio-group input[type='radio']:disabled + label {
+	cursor: wait;
+}
+
+.radio-group .price-op-na {
+	background-color: #fff;
+	color: #444;
+	border: 2px solid #444;
+}
+.radio-group input[type='radio'].price-op-na:checked + label {
+	background-color: #f0f0f0;
+	color: #000;
+	border-color: #464bb2;
+}
+.radio-group input[type='radio'].price-op-na:hover + label {
+	background-color: #f0f0f0;
+	color: #000;
+	border-color: #464bb2;
+}
+
+.price-container .input-wrapper {
+	background: #fff;
+	border-radius: 8px;
+	display: flex;
+	padding: 0 10px;
+	border: 1px solid #aaa;
+	height: 2rem;
+	transition: all 0.3s ease;
+}
+
+.input-wrapper:focus-within {
+	border: 1px solid #777;
+	box-shadow: 0 6px 10px #eee;
+}
+
+.input-wrapper input {
+	background-color: transparent;
+	height: 100%;
+	width: 100%;
+	border: none;
+	outline: none;
+	color: #222;
+	margin-left: 5px;
+}
+.input-wrapper input:disabled {
+	cursor: wait;
+}
+.input-wrapper input::placeholder {
+	color: #aaa;
+}
+.currency-icon {
+	display: flex;
+	align-items: center;
+	font-size: 1rem;
+	color: #777;
+}
+@media (max-width: 900px) {
+	.price-container {
+		flex-direction: column;
+	}
+
+	.radio-group {
+		margin: 0 auto;
+	}
+}
+@media (max-width: 600px) {
+	.price-container {
+		width: 65%;
+	}
+}

@@ -1,0 +1,64 @@
+import { useRef, useState, useCallback, useMemo } from 'react';
+
+// Redux Toolkit
+import { useDispatch, useSelector } from 'react-redux';
+import { setProducts, toggleLoading } from '../store/slices/products/productsSlice';
+
+// Services
+import { getProducts, searchEcommerceProducts } from '../services/productService.js';
+
+export function useProducts(filters) {
+	const dispatch = useDispatch();
+
+	// Retrieve global state variables
+	const products = useSelector((state) => state.products.products);
+	const loading = useSelector((state) => state.products.loading);
+
+	// el error no se usa pero puedes implementarlo
+	// si quieres:
+	const [, setError] = useState(null);
+	const previousSearch = useRef(filters);
+
+	const fetchProducts = useCallback(
+		async (_filters) => {
+			const { search_text, price, price_operator } = _filters;
+			const { current } = previousSearch;
+			/** Dont excecute the query if is useless*/
+
+			const shouldExecuteQuery =
+				search_text !== current.search_text ||
+				(price !== current.price && price > 0 && price_operator !== '') ||
+				(price_operator !== current.price_operator && price > 0);
+			if (!shouldExecuteQuery) return;
+
+			try {
+				dispatch(toggleLoading());
+				setError(null);
+				previousSearch.current = _filters;
+
+				await searchEcommerceProducts({ companyPrefix: 'HeavenStore', search_text });
+				await searchEcommerceProducts({ companyPrefix: 'MagicStore', search_text });
+
+				const newProducts = await getProducts(_filters);
+
+				dispatch(setProducts(newProducts));
+			} catch (e) {
+				setError(e.message);
+			} finally {
+				dispatch(toggleLoading());
+			}
+		},
+		[dispatch],
+	);
+
+	const sortedProducts = useMemo(() => {
+		return [...products].sort((a, b) => a.name.localeCompare(b.name));
+	}, [products]);
+
+	return {
+		fetchProducts,
+		//products,
+		products: sortedProducts,
+		loading,
+	};
+}

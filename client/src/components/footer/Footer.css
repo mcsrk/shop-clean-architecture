@@ -1,0 +1,35 @@
+.footer {
+	position: fixed;
+	right: 16px;
+	bottom: 16px;
+	text-align: left;
+	background: rgba(220, 220, 220, 0.7);
+	padding: 8px 24px;
+	border-radius: 12px;
+	opacity: 0.95;
+	backdrop-filter: blur(8px);
+}
+
+.footer span {
+	font-size: 14px;
+	color: #09f;
+	opacity: 0.8;
+}
+
+.footer h4,
+.footer h5 {
+	margin: 0;
+	display: flex;
+}
+
+.footer div {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+}
+
+.footer img {
+	width: 18px;
+	height: 18px;
+}
