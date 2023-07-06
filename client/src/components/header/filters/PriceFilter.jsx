@@ -11,11 +11,19 @@ import './PriceFilter.css';
 
 // Hooks
 import { useFilters } from '../../../hooks/useFilters';
+import { useProducts } from '../../../hooks/useProducts';
 
 const PriceFilter = () => {
 	const { filters, setFilterPrice, setFilterPriceOperator } = useFilters();
+	const { loading } = useProducts();
 
 	const priceFilterId = useId();
+
+	const selectButtonLess = useId();
+	const selectButtonEqual = useId();
+	const selectButtonGreater = useId();
+	const selectButtonNA = useId();
+
 	const [priceValue, setPriceValue] = useState('');
 
 	const handleChangeSearch = (event) => {
@@ -27,23 +35,9 @@ const PriceFilter = () => {
 		setFilterPrice(priceValue);
 	}, DEBOUNCE_DELAY);
 
-	const selectButtonLess = useId();
-	const selectButtonEqual = useId();
-	const selectButtonGreater = useId();
-	const selectButtonNA = useId();
-
 	const onOptionChange = (e) => {
 		setFilterPriceOperator(e.target.value);
 	};
-
-	// const handleChangeSearch = (event) => {
-	// 	setValue(event.target.value);
-	// 	debounced(event.target.value);
-	// };
-
-	// const debounced = useDebouncedCallback((typedValue) => {
-	// 	setFilterSearchText(typedValue);
-	// }, DEBOUNCE_DELAY);
 
 	return (
 		<>
@@ -54,6 +48,7 @@ const PriceFilter = () => {
 					</span>
 
 					<input
+						disabled={loading}
 						type="text"
 						id={priceFilterId}
 						value={priceValue}
@@ -64,6 +59,7 @@ const PriceFilter = () => {
 				</div>
 				<div className="radio-group">
 					<input
+						disabled={loading}
 						type="radio"
 						id={selectButtonLess}
 						name="size"
@@ -76,6 +72,7 @@ const PriceFilter = () => {
 					</label>
 
 					<input
+						disabled={loading}
 						type="radio"
 						id={selectButtonEqual}
 						name="size"
@@ -88,6 +85,7 @@ const PriceFilter = () => {
 					</label>
 
 					<input
+						disabled={loading}
 						type="radio"
 						id={selectButtonGreater}
 						name="size"
@@ -99,6 +97,8 @@ const PriceFilter = () => {
 						<FaGreaterThanEqual />
 					</label>
 					<input
+						disabled={loading}
+						className="price-op-na"
 						type="radio"
 						id={selectButtonNA}
 						name="size"
@@ -106,7 +106,9 @@ const PriceFilter = () => {
 						checked={filters.price_operator === ''}
 						onChange={onOptionChange}
 					/>
-					<label htmlFor={selectButtonNA}>N/A</label>
+					<label className="price-op-na" htmlFor={selectButtonNA}>
+						N/A
+					</label>
 				</div>
 			</div>
 		</>
