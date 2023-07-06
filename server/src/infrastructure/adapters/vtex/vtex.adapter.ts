@@ -79,6 +79,53 @@ export class VtexAdapter implements IEcommerceAdapter {
 		}
 	}
 
+	private async getAllProductsPaginated(_from: number, _to: number): Promise<any> {
+		const response = await this.client.get(`/api/catalog_system/pub/products/search `, {
+			params: {
+				_from,
+				_to,
+			},
+		});
+		return response;
+	}
+
+	async fetchAllProducts(): Promise<Product[][]> {
+		try {
+			/** VTEX Api get all prodcuts with 10 products step*/
+
+			const allProducts: any[] = [];
+			let from = 0;
+			let to = 9;
+			let totalElements = 0;
+
+			do {
+				const response = await this.getAllProductsPaginated(from, to);
+				const products = response.data;
+				allProducts.push(...products);
+
+				const resourcesHeader = response.headers.resources;
+				const [range, total] = resourcesHeader.split('/');
+
+				totalElements = parseInt(total);
+
+				const [start, end] = range.split('-');
+				from = parseInt(start) + 10;
+				to = parseInt(end) + 10;
+
+				Logging.info(`[Vtex Adapter] Partial ALL products: ${allProducts.length}`);
+			} while (from < totalElements);
+
+			Logging.info(`[Vtex Adapter] Total ALL Retrieved: ${allProducts.length} from ${totalElements} available.`);
+			const productsFormatedToDb = allProducts.map((product) => this.adaptProductToDB(product));
+
+			return productsFormatedToDb;
+		} catch (error: any) {
+			Logging.error('Error getting all products from VTEX:');
+			Logging.error(error);
+			return [];
+		}
+	}
+
 	private async getPaginatedProducts(_from: number, _to: number, searchTerm: string): Promise<any> {
 		const response = await this.client.get(`/api/catalog_system/pub/products/search/${searchTerm}`, {
 			params: {
@@ -118,16 +165,11 @@ export class VtexAdapter implements IEcommerceAdapter {
 		responseFormattedProducts.push(parentProduct);
 
 		const parsedVariants: Product[] = items?.map((item: any) => {
-			const { itemId: variantId, sellers, referenceId, nameComplete, name, images } = item;
+			const { itemId: variantId, sellers, nameComplete, name, images } = item;
 
 			if (sellers.length === 0) {
 				Logging.warning(
 					`[VTEX Adapt] Adapt to DB - VtexProduct Id: ${id} - item: ${variantId} has no sellers: ${sellers}. Variant ${variantId} has no quantity`,
-				);
-			}
-			if (referenceId.length === 0) {
-				Logging.warning(
-					`[VTEX Adapt] Adapt to DB - VtexProduct Id: ${id} - item: ${variantId} has no referenceId: ${referenceId}. Variant ${variantId} has no selected options `,
 				);
 			}
 

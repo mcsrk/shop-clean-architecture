@@ -1,0 +1,16 @@
+.error-message {
+	margin: 0 auto;
+	background-color: #fce4e4;
+	border: 1px solid #fcc2c3;
+	width: 50%;
+	max-width: 300px;
+	padding: 1rem 1.5rem;
+	border-radius: 8px;
+	color: #e62e31;
+	opacity: 0;
+	transition: opacity 0.2s ease-in-out;
+}
+
+.error-message.show {
+	opacity: 1;
+}

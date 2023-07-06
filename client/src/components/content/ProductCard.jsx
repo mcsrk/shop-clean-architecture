@@ -6,13 +6,20 @@ import './ProductCard.css';
 // Utils
 import { addThousandSeparators } from '../../utils/stringManipulator';
 
+// Default Image
+import defaultImage from '../../assets/image-not-available.png';
+
 export function ProductCard({ product }) {
 	const { image, name, price } = product;
 	const category = name.split(' ', 1);
 
+	const handleImageError = (event) => {
+		event.target.src = defaultImage;
+	};
+
 	return (
 		<li className="product-card">
-			<img src={image} alt={name} />
+			<img src={image} alt={name} onError={handleImageError} />
 			<div className="card-block">
 				<div className="info">
 					<p>

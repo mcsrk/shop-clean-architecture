@@ -15,12 +15,12 @@ export function Footer() {
 			<div>
 				<img src="shop-logo.png" alt="Shopping cart icon" />
 				<h4>E-commerce unificado </h4>
+				<h5>
+					<span>Jhon Acosta</span>
+				</h5>
 			</div>
 
-			<h5>
-				<span>Jhon Acosta</span>
-			</h5>
-			{IS_DEVELOPMENT && <div>{JSON.stringify(filters)}</div>}
+			{IS_DEVELOPMENT && <div className="debug">{JSON.stringify(filters)}</div>}
 		</footer>
 	);
 }

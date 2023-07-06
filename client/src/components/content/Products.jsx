@@ -9,10 +9,12 @@ import { useFilters } from '../../hooks/useFilters';
 
 // Components
 import { ProductCard } from './ProductCard';
+import Error from '../error/Error';
+import Status from './Status';
 
 export function Products() {
 	const { filters } = useFilters();
-	const { products, fetchProducts } = useProducts(filters);
+	const { products, fetchProducts, error } = useProducts(filters);
 
 	useEffect(() => {
 		fetchProducts(filters);
@@ -21,11 +23,15 @@ export function Products() {
 
 	return (
 		<section className="products">
+			<Status />
+
 			<ul>
 				{products?.map((product) => {
 					return <ProductCard key={`product-card-${product.product_id}`} product={product} />;
 				})}
 			</ul>
+
+			<Error message={error} />
 		</section>
 	);
 }
