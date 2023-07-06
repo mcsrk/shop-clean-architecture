@@ -36,12 +36,12 @@ App fullstack que unifica productos de ecommerce diferentes, como VTEX y Shopify
 - Acceder a la carpeta del servidor usando `cd server/` 
 - Instalar las dependencias del servidor usando `npm install`
 - Crear un `.env` propio usando como referencia `./server/.env.exmaple` 
-- Correr el servidor usando `nodemon` 
+- Correr el servidor usando `npm start` 
 
 ### Cliente
 - Acceder a la carpeta del cliente usando  `cd client/` 
 - Instalar las dependencias del servidor usando `npm install`
-- Correr el cliente usand `npm run dev` 
+- Correr el cliente usand `npm start` 
 
 ## Screenshots
 ### Client
