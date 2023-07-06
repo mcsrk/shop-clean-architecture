@@ -1,7 +1,5 @@
 import './App.css';
 
-// Config
-
 // Components
 import { Header } from './components/header/Header';
 import { Products } from './components/content/Products';

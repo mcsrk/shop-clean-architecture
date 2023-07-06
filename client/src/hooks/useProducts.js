@@ -25,10 +25,12 @@ export function useProducts(filters) {
 			const { current } = previousSearch;
 			/** Dont excecute the query if is useless*/
 
+			const onSearchTextChange = search_text !== current.search_text;
+
 			const shouldExecuteQuery =
-				search_text !== current.search_text ||
-				(price !== current.price && price > 0 && price_operator !== '') ||
-				(price_operator !== current.price_operator && price > 0);
+				onSearchTextChange ||
+				(price !== current.price && price >= 0 && price_operator !== '') ||
+				(price_operator !== current.price_operator && price >= 0);
 			if (!shouldExecuteQuery) return;
 
 			try {
@@ -36,8 +38,12 @@ export function useProducts(filters) {
 				setError(null);
 				previousSearch.current = _filters;
 
-				await searchEcommerceProducts({ companyPrefix: 'HeavenStore', search_text });
-				await searchEcommerceProducts({ companyPrefix: 'MagicStore', search_text });
+				/** Only request Ecommerce search when search term has changed.
+				 *  Because server only uses search_tem to query on externals apis */
+				if (onSearchTextChange) {
+					await searchEcommerceProducts({ companyPrefix: 'HeavenStore', search_text });
+					await searchEcommerceProducts({ companyPrefix: 'MagicStore', search_text });
+				}
 
 				const newProducts = await getProducts(_filters);
 
