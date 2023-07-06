@@ -34,7 +34,6 @@ export function useProducts(filters) {
 			try {
 				dispatch(toggleLoading());
 				setError(null);
-				console.log(`Excecuting:   `, { current }, { _filters });
 				previousSearch.current = _filters;
 
 				await searchEcommerceProducts({ companyPrefix: 'HeavenStore', search_text });
