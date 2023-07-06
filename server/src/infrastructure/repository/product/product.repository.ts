@@ -14,6 +14,7 @@ import { Product } from '../../../entities/product/product.entity';
 import Logging from '../../library/Logging';
 
 export class ProductRepository implements IProductRepository {
+	private insertCounter = 0;
 	async selectProductsByFilters(searchParams: FilterParams): Promise<Product[] | null> {
 		const { search_text, price, price_operator } = searchParams;
 
@@ -62,6 +63,14 @@ export class ProductRepository implements IProductRepository {
 			}
 
 			const insertedProduct = await ProductModel.create(product);
+			process.stdout.write('\x1B[1A'); // Removed prev line
+			process.stdout.clearLine(0);
+			this.insertCounter++;
+			Logging.warning(
+				`[Product Repository] Inserted ${this.insertCounter}th prod: ExtId:${product.external_id} - ${
+					product.name.slice(0, 10) + '...'
+				}`,
+			);
 			return insertedProduct;
 		} catch (error: any) {
 			const message = error.message;
