@@ -54,8 +54,8 @@ App fullstack que unifica productos de ecommerce diferentes, como VTEX y Shopify
   ```sh
     npm install
   ```  
-- Crear un `.env` propio en `./server` usando como referencia  
-  > Nota: usar `./server/.env.exmaple` como ejemplo.
+- Crear un `.env` propio en `./server` usando como referencia `./server/.env.exmaple`  
+ 
 - Correr el servidor en  [`http://localhost:8000/`](http://localhost:8000/) usando  
   ```sh
     npm start
