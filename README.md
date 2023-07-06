@@ -39,8 +39,11 @@ App fullstack que unifica productos de ecommerce diferentes, como VTEX y Shopify
 
 ## Setup
 
-### Servidor
 - Descargar el repositorio
+  ```sh
+    git clone https://github.com/mcsrk/shop-clean-architecture.git
+  ``` 
+### Servidor
 - Acceder a la carpeta del servidor usando 
   ```sh
     cd server/
@@ -51,7 +54,7 @@ App fullstack que unifica productos de ecommerce diferentes, como VTEX y Shopify
   ```  
 - Crear un `.env` propio en `./server` usando como referencia  
   > Nota: usar `./server/.env.exmaple` como ejemplo.
-- Correr el servidor usando `npm start` 
+- Correr el servidor usando  
   ```sh
     npm start
   ```  

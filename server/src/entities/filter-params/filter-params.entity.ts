@@ -10,6 +10,12 @@ export class FilterParams implements IFilterParams {
 
 	constructor(filterObj: any) {
 		/** Validation: is operator_price valid? otherwise delete it*/
+		if (filterObj.price_operator === '') {
+			Logging.warning(
+				`[Filter Params Entity] price_operator has a invalid value: ${filterObj.price_operator}, it'll be ignored.`,
+			);
+			delete filterObj.price_operator;
+		}
 		if (filterObj.price_operator && !['lt', 'lte', 'eq', 'gte', 'gt'].includes(filterObj.price_operator)) {
 			Logging.warning(
 				`[Filter Params Entity] price_operator has a invalid value: ${filterObj.price_operator}, it'll be ignored.`,
@@ -18,7 +24,7 @@ export class FilterParams implements IFilterParams {
 		}
 
 		/** Validation: is price a valid number or can be parsed into a valid number? otherwise delete it. */
-		if (filterObj.price === '' || filterObj.price === '0') {
+		if (filterObj.price === '' || Number(filterObj.price) <= 0) {
 			Logging.warning(`[Filter Params Entity] price has a invalid value, it'll be ignored.`);
 			delete filterObj.price;
 		}

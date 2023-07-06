@@ -27,12 +27,13 @@ const productUseCases = new ProductService(productRepo);
 /**
  * Initialize product controller
  */
-const productController = new SearchController(eCommerceUseCases, productUseCases);
+const searchEcommerceController = new SearchController(eCommerceUseCases, productUseCases);
 
 /**
  * Create routes
  */
 
-route.get(`/:companyPrefix`, productController.searchProductsUsingParams);
+route.get(`/:companyPrefix`, searchEcommerceController.searchProductsUsingParams);
+route.get(`/all/:companyPrefix`, searchEcommerceController.fetchAllProducts);
 
 export default route;
