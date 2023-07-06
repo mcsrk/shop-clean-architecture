@@ -158,11 +158,11 @@ export class ShopifyAdapter implements IEcommerceAdapter {
 		const { id, variants, options } = shopifyProduct;
 
 		if (variants.length === 0) {
-			Logging.warning(`[EcommerceProduct] db adapt shopifyProduct Id: ${id} no tiene variants`);
+			Logging.warning(`[Shopify Adapter] Adapt to DB - ShopifyProduct Id: ${id} has no variants`);
 		}
 
 		if (options.length === 0) {
-			Logging.warning(`[EcommerceProduct] db adapt shopifyProduct Id: ${id} no tiene options`);
+			Logging.warning(`[Shopify Adapter] Adapt to DB - ShopifyProduct Id: ${id} has no options`);
 		}
 
 		const parentProductData: IProductInput = {
@@ -184,7 +184,7 @@ export class ShopifyAdapter implements IEcommerceAdapter {
 		const parsedVariants: Product[] = variants?.map((variant: any) => {
 			if (!variant.title) {
 				Logging.warning(
-					`[EcommerceProduct] shopifyProduct db adapt Id: ${id} - variant: ${variant.id} no tiene titulo: ${variant.title}. `,
+					`[Shopify Adapter] Adapt to DB - ShopifyProduct Id: ${id} - variant: ${variant.id} no tiene titulo: ${variant.title}. `,
 				);
 			}
 

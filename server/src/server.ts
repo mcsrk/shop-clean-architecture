@@ -68,7 +68,7 @@ const StartServer = () => {
 	router.use('/search', searchRoute);
 
 	/** Healthcheck endpoint */
-	router.get('/ping', (_, res: Response) => res.status(200).json({ hello: 'world' }));
+	router.get('/', (_, res: Response) => res.status(200).json({ Unified: 'Ecommerce' }));
 
 	/** Error handling on wrong Route */
 	router.use((req: Request, res: Response) => {
@@ -83,5 +83,5 @@ const StartServer = () => {
 
 	http
 		.createServer(router)
-		.listen(CONFIG.SERVER.PORT, () => Logging.info(`Server is running on port ${CONFIG.SERVER.PORT}`));
+		.listen(CONFIG.SERVER.PORT, () => Logging.info(`Server is running on port http://localhost:${CONFIG.SERVER.PORT}`));
 };

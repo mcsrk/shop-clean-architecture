@@ -95,7 +95,7 @@ export class VtexAdapter implements IEcommerceAdapter {
 		const { productId: id, items } = vtexProduct;
 
 		if (items.length === 0) {
-			Logging.warning(`[EcommerceProduct] vtexProduct Id: ${id} no tiene items`);
+			Logging.warning(`[VTEX Adapt] Adapt to DB - VtexProduct Id: ${id} has no items`);
 		}
 
 		const firstVariantPrice = items[0].sellers[0].commertialOffer.Price;
@@ -122,12 +122,12 @@ export class VtexAdapter implements IEcommerceAdapter {
 
 			if (sellers.length === 0) {
 				Logging.warning(
-					`[EcommerceProduct] vtexProduct Id: ${id} - item: ${variantId} no tiene sellers: ${sellers}. La variante ${variantId} no tendra precio ni cantidad`,
+					`[VTEX Adapt] Adapt to DB - VtexProduct Id: ${id} - item: ${variantId} has no sellers: ${sellers}. Variant ${variantId} has no quantity`,
 				);
 			}
 			if (referenceId.length === 0) {
 				Logging.warning(
-					`[EcommerceProduct] vtexProduct Id: ${id} - item: ${variantId} no tiene referenceId: ${referenceId}. La variante ${variantId} no tendra selected options `,
+					`[VTEX Adapt] Adapt to DB - VtexProduct Id: ${id} - item: ${variantId} has no referenceId: ${referenceId}. Variant ${variantId} has no selected options `,
 				);
 			}
 
