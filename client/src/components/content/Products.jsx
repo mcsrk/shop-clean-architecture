@@ -10,6 +10,7 @@ import { useFilters } from '../../hooks/useFilters';
 // Components
 import { ProductCard } from './ProductCard';
 import Error from '../error/Error';
+import Status from './Status';
 
 export function Products() {
 	const { filters } = useFilters();
@@ -22,6 +23,7 @@ export function Products() {
 
 	return (
 		<section className="products">
+			<Status />
 			<ul>
 				{products?.map((product) => {
 					return <ProductCard key={`product-card-${product.product_id}`} product={product} />;
