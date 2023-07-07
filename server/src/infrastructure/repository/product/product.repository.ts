@@ -55,7 +55,12 @@ export class ProductRepository implements IProductRepository {
 
 	async insertProduct(product: Product): Promise<Product | null> {
 		try {
-			const existingProduct = await ProductModel.findOne({ where: { external_id: product.external_id } });
+			const existingProduct = await ProductModel.findOne({
+				where: { external_id: product.external_id },
+				/**  FIXME: This improve the query by only retrieving a single field if the found.
+				 * Remove "attributes" if the whole product is needed as response */
+				attributes: ['external_id'],
+			});
 
 			if (existingProduct) {
 				return existingProduct;

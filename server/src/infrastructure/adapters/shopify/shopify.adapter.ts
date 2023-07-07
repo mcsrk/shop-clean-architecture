@@ -228,7 +228,7 @@ export class ShopifyAdapter implements IEcommerceAdapter {
 			name: shopifyProduct.title ?? this.defaultValuesDb.name,
 			price: Number(variants[0].price) ?? this.defaultValuesDb.price,
 			image: shopifyProduct?.image?.src ?? shopifyProduct?.images[0]?.src ?? this.defaultValuesDb.image,
-			json_product: shopifyProduct ?? this.defaultValuesDb.json_product,
+			json_product: (({ variants, ...rest }) => rest)(shopifyProduct) ?? this.defaultValuesDb.json_product,
 			sku: id ?? this.defaultValuesDb.sku,
 			store_product_id: /*id ??*/ this.defaultValuesDb.store_product_id,
 		};
