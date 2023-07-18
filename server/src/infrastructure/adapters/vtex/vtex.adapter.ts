@@ -156,7 +156,7 @@ export class VtexAdapter implements IEcommerceAdapter {
 			name: vtexProduct.productName ?? this.defaultValuesDb.name,
 			price: Number(firstVariantPrice) ?? this.defaultValuesDb.price,
 			image: firstVariantImage ?? this.defaultValuesDb.image,
-			json_product: vtexProduct ?? this.defaultValuesDb.json_product,
+			json_product: (({ items, ...rest }) => rest)(vtexProduct) ?? this.defaultValuesDb.json_product,
 			sku: id ?? this.defaultValuesDb.sku,
 			store_product_id: /* id ?? */ this.defaultValuesDb.store_product_id,
 		};

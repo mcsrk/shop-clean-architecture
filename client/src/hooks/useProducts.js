@@ -6,6 +6,7 @@ import { setProducts, toggleLoading, setStatus, setError } from '../store/slices
 
 // Services
 import { getProducts, searchEcommerceProducts } from '../services/productService.js';
+import { AVAILABLE_STORES } from '../config';
 
 export function useProducts(filters) {
 	const dispatch = useDispatch();
@@ -40,13 +41,22 @@ export function useProducts(filters) {
 				/** Only request Ecommerce search when search term has changed.
 				 *  Because server only uses search_tem to query on externals apis */
 				if (onSearchTextChange) {
-					dispatch(setStatus('Consultando productos de HeavenStore - Shopify...'));
-					await searchEcommerceProducts({ companyPrefix: 'HeavenStore', search_text });
-					dispatch(setStatus('Consultando productos de MagicStore - VTEX...'));
-					await searchEcommerceProducts({ companyPrefix: 'MagicStore', search_text });
+					const ecommercePromises = [];
+					const shopNames = Object.values(AVAILABLE_STORES).flat();
+
+					for (const shop of shopNames) {
+						ecommercePromises.push(searchEcommerceProducts({ companyPrefix: shop ?? '', search_text }));
+					}
+
+					try {
+						dispatch(setStatus('Consultando tiendas...'));
+						await Promise.all(ecommercePromises);
+					} catch (e) {
+						dispatch(setError(e.message));
+					}
 				}
 
-				dispatch(setStatus('Estructurando productos...'));
+				dispatch(setStatus('Buscando productos...'));
 				const newProducts = await getProducts(_filters);
 
 				dispatch(setStatus(newProducts.length ? null : `Sin productos para : "${search_text}"`));

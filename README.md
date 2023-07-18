@@ -16,8 +16,8 @@ Unificación de productos de Shopify y Vtex por medio de NodeJs + Express, los c
     - [Cliente](#cliente-1)
     - [Documentación del servidor](#documentación-del-servidor)
   - [Cómo se abordó el problema](#cómo-se-abordó-el-problema)
-      - [Poblar la base de datos con cada consulta](#poblar-la-base-de-datos-con-cada-consulta)
-      - [Poblar la base de datos desde el inicio](#poblar-la-base-de-datos-desde-el-inicio)
+    - [Poblar la base de datos con cada consulta](#poblar-la-base-de-datos-con-cada-consulta)
+    - [Poblar la base de datos desde el inicio](#poblar-la-base-de-datos-desde-el-inicio)
   - [Referentes](#referentes)
   - [License](#license)
 
@@ -41,9 +41,12 @@ App fullstack que unifica productos de ecommerce diferentes, como VTEX y Shopify
 
 ## Setup
 
-- Descargar el repositorio
+- Descargar el repositorio y acceder al código
   ```sh
     git clone https://github.com/mcsrk/shop-clean-architecture.git
+  ``` 
+  ```sh
+    cd shop-clean-architecture
   ``` 
 ### Servidor
 - Acceder a la carpeta del servidor usando 
@@ -54,8 +57,8 @@ App fullstack que unifica productos de ecommerce diferentes, como VTEX y Shopify
   ```sh
     npm install
   ```  
-- Crear un `.env` propio en `./server` usando como referencia  
-  > Nota: usar `./server/.env.exmaple` como ejemplo.
+- Crear un `.env` propio en `./server` usando como referencia `./server/.env.exmaple`  
+ 
 - Correr el servidor en  [`http://localhost:8000/`](http://localhost:8000/) usando  
   ```sh
     npm start
@@ -99,8 +102,8 @@ Para el flujo de búsqueda en los diferentes Ecommerce se tuvo en cuenta 2 alter
 - Poblar la base de datos con cada consulta.
 - Poblar la base de datos desde el inicio.
 
-#### Poblar la base de datos con cada consulta
-Cada cambio de parámetros hechos desde el cliente dispara un consulta a la ruta `/search/${companyPrefix}` para cada ecommerce disponible : 
+### Poblar la base de datos con cada consulta
+Cada cambio de parámetros hechos desde el cliente dispara una serie de consultas paralelas a la ruta `/search/${companyPrefix}` para cada ecommerce disponible: 
 - Esta consulta busca un máximo de 10 productos que coincidan con el filtro `search_text`, acto seguido inserta en la base de datos propia los resultados.
 
 Una vez finalizadas las peticiones a los ecommerce, el cliente ejecuta una petición `/products`:
@@ -108,7 +111,7 @@ Una vez finalizadas las peticiones a los ecommerce, el cliente ejecuta una petic
 
   > Esta estrategía permite poblar la base de datos progresivamente con cada consulta hecha desde el cliente. A su vez, mantiene en la base de datos propia productos que hayan podido ser agregados a los  ECommerce recientemente.
   
-#### Poblar la base de datos desde el inicio
+###  Poblar la base de datos desde el inicio
 
 En el momento en el que se renderiza el cliente se ejecuta `/search/all/${companyPrefix}` para cada ecommerce disponible : 
 - Esta consulta obtiene todos los productos disponibles por medio de paginación, acto seguido los inserta en la base de datos propia. 
@@ -119,6 +122,7 @@ De manera restictiva, el cliente tendrá que esperar a que la "migración" de pr
   > Esta estrategía permite migrar los productos de los Ecommerce a la DB propia, lo cual reduce los tiempos de búsqueda de `/products`. Sin embargo, es bloqueante ya que las consultas realizadas durante la migración podrían no retornar productos. 
   Además, solo se mantiene una versión de los productos de los Ecommerce sincronizada ya que si, un producto nuevo es añadido a algún Ecommerce, el cliente web no sabrá de su existencia hasta que la migración se haga otra vez.
 
+Finalmente se decidió optar por [poblar la base de datos con cada consulta](#poblar-la-base-de-datos-con-cada-consulta) ya que esta alternativa permite tener una versión más actualizada de los productos almacendos en los ecommerce con cada consulta.
 
 ## Referentes
 
